@@ -3,16 +3,133 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nearshore Connection</title>
+    <title>Nearshore Connection - Gestor de Contenido</title>
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-    <header>
-        <h1>Nearshore Connection</h1>
-    </header>
-    <main>
-        <p>Bienvenido a Nearshore Connection</p>
-    </main>
+    <div class="container">
+        <!-- Encabezado Configurable -->
+        <header id="main-header">
+            <div class="header-content">
+                <h1 id="header-title">Nearshore Connection</h1>
+                <p id="header-subtitle">Sistema de Gestión de Contenido</p>
+            </div>
+        </header>
+
+        <!-- Panel de Control -->
+        <div class="control-panel">
+            <button onclick="toggleEditMode()" class="btn-primary">Modo Edición</button>
+            <button onclick="saveContent()" class="btn-success">Guardar</button>
+            <button onclick="exportContent()" class="btn-info">Exportar</button>
+        </div>
+
+        <!-- Menú Lateral con Temas y Subtemas -->
+        <aside id="sidebar">
+            <h2>Menú de Navegación</h2>
+            <div id="menu-container"></div>
+            <button onclick="addTopic()" class="btn-add">+ Agregar Tema</button>
+        </aside>
+
+        <!-- Área de Contenido Principal -->
+        <main id="content-area">
+            <div id="topic-content">
+                <h2>Bienvenido</h2>
+                <p>Selecciona un tema del menú o crea uno nuevo para comenzar.</p>
+            </div>
+        </main>
+
+        <!-- Pie de Página Configurable -->
+        <footer id="main-footer">
+            <div class="footer-content">
+                <p id="footer-text">© 2025 Nearshore Connection</p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Modal para Editar Encabezado -->
+    <div id="header-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('header-modal')">&times;</span>
+            <h2>Editar Encabezado</h2>
+            <label>Título:</label>
+            <input type="text" id="edit-header-title" placeholder="Título del encabezado">
+            <label>Subtítulo:</label>
+            <input type="text" id="edit-header-subtitle" placeholder="Subtítulo del encabezado">
+            <label>Color de fondo:</label>
+            <input type="color" id="edit-header-color">
+            <label>Imagen de fondo (URL):</label>
+            <input type="url" id="edit-header-image" placeholder="https://...">
+            <button onclick="updateHeader()" class="btn-primary">Aplicar</button>
+        </div>
+    </div>
+
+    <!-- Modal para Agregar/Editar Tema -->
+    <div id="topic-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('topic-modal')">&times;</span>
+            <h2>Agregar/Editar Tema</h2>
+            <label>Nombre del Tema:</label>
+            <input type="text" id="topic-name" placeholder="Ej: Introducción">
+            <label>Descripción:</label>
+            <textarea id="topic-description" placeholder="Descripción del tema"></textarea>
+            <button onclick="saveTopic()" class="btn-primary">Guardar Tema</button>
+        </div>
+    </div>
+
+    <!-- Modal para Agregar Subtema -->
+    <div id="subtopic-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('subtopic-modal')">&times;</span>
+            <h2>Agregar Subtema</h2>
+            <label>Nombre del Subtema:</label>
+            <input type="text" id="subtopic-name" placeholder="Ej: Conceptos Básicos">
+            <label>Descripción:</label>
+            <textarea id="subtopic-description" placeholder="Descripción del subtema"></textarea>
+            <button onclick="saveSubtopic()" class="btn-primary">Guardar Subtema</button>
+        </div>
+    </div>
+
+    <!-- Modal para Agregar Recursos -->
+    <div id="resource-modal" class="modal">
+        <div class="modal-content large">
+            <span class="close" onclick="closeModal('resource-modal')">&times;</span>
+            <h2>Agregar Recurso</h2>
+            
+            <label>Tipo de Recurso:</label>
+            <select id="resource-type" onchange="updateResourceForm()">
+                <option value="">Selecciona un tipo...</option>
+                <option value="html">Archivo HTML</option>
+                <option value="css">Archivo CSS</option>
+                <option value="js">Archivo JavaScript</option>
+                <option value="pdf">PDF</option>
+                <option value="image">Imagen (JPG/PNG/SVG)</option>
+                <option value="google-doc">Google Docs</option>
+                <option value="google-sheet">Google Sheets</option>
+                <option value="url">URL Externa</option>
+                <option value="embed-code">Código Embed</option>
+            </select>
+
+            <div id="resource-form-container"></div>
+            
+            <button onclick="saveResource()" class="btn-primary">Agregar Recurso</button>
+        </div>
+    </div>
+
+    <!-- Modal para Editar Pie de Página -->
+    <div id="footer-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('footer-modal')">&times;</span>
+            <h2>Editar Pie de Página</h2>
+            <label>Texto:</label>
+            <textarea id="edit-footer-text" placeholder="Texto del pie de página"></textarea>
+            <label>Color de fondo:</label>
+            <input type="color" id="edit-footer-color">
+            <label>HTML Personalizado:</label>
+            <textarea id="edit-footer-html" placeholder="<div>HTML personalizado</div>"></textarea>
+            <button onclick="updateFooter()" class="btn-primary">Aplicar</button>
+        </div>
+    </div>
+
     <script src="js/main.js"></script>
 </body>
 </html>
