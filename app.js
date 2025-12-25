@@ -187,9 +187,7 @@ function hideAllResourceFields() {
 }
 
 function handlePreview() {
-    const htmlCode = document.getElementById('htmlCode').value;
-    const cssCode = document.getElementById('cssCode').value;
-    const jsCode = document.getElementById('jsCode').value;
+    const fullHtmlCode = document.getElementById('fullHtmlCode').value;
     
     const previewContainer = document.getElementById('previewContainer');
     const previewFrame = document.getElementById('previewFrame');
@@ -197,25 +195,8 @@ function handlePreview() {
     // Clear previous preview
     previewFrame.innerHTML = '';
     
-    // Create style element
-    const styleElement = document.createElement('style');
-    styleElement.textContent = cssCode;
-    
-    // Set HTML content
-    previewFrame.innerHTML = htmlCode;
-    previewFrame.appendChild(styleElement);
-    
-    // Execute JavaScript in a safe way
-    if (jsCode) {
-        try {
-            // Create a function scope for the JS code
-            const scriptFunc = new Function(jsCode);
-            scriptFunc.call(previewFrame);
-        } catch (error) {
-            console.error('Error en JavaScript:', error);
-            alert('Error en el código JavaScript: ' + error.message);
-        }
-    }
+    // Render the full HTML
+    renderFullHTML(previewFrame, fullHtmlCode);
     
     previewContainer.style.display = 'block';
 }
@@ -237,9 +218,7 @@ function handleResourceSubmit(e) {
     };
     
     if (type === 'html') {
-        resource.html = document.getElementById('htmlCode').value;
-        resource.css = document.getElementById('cssCode').value;
-        resource.js = document.getElementById('jsCode').value;
+        resource.fullHtml = document.getElementById('fullHtmlCode').value;
     } else if (type === 'link') {
         resource.url = document.getElementById('linkUrl').value;
         resource.title = document.getElementById('linkTitle').value;
@@ -389,43 +368,109 @@ function renderHTMLResource(containerId, resource) {
     // Clear container
     container.innerHTML = '';
     
-    // Create a wrapper div
+    // Check if it's the new format (fullHtml) or old format (separate html/css/js)
+    if (resource.fullHtml) {
+        // New format: full HTML in one field
+        renderFullHTML(container, resource.fullHtml);
+    } else {
+        // Old format: separate fields (for backward compatibility)
+        const wrapper = document.createElement('div');
+        wrapper.className = 'html-resource-wrapper';
+        
+        // Add CSS
+        if (resource.css) {
+            const style = document.createElement('style');
+            style.textContent = resource.css;
+            wrapper.appendChild(style);
+        }
+        
+        // Add HTML
+        if (resource.html) {
+            const htmlContainer = document.createElement('div');
+            htmlContainer.innerHTML = resource.html;
+            wrapper.appendChild(htmlContainer);
+        }
+        
+        container.appendChild(wrapper);
+        
+        // Execute JavaScript
+        if (resource.js) {
+            try {
+                const scriptFunc = new Function('container', resource.js);
+                scriptFunc.call(wrapper, wrapper);
+            } catch (error) {
+                console.error('Error ejecutando JavaScript del recurso:', error);
+                const errorDiv = document.createElement('div');
+                errorDiv.style.color = '#dc3545';
+                errorDiv.style.padding = '10px';
+                errorDiv.style.background = '#f8d7da';
+                errorDiv.style.borderRadius = '4px';
+                errorDiv.textContent = 'Error en JavaScript: ' + error.message;
+                container.appendChild(errorDiv);
+            }
+        }
+    }
+}
+
+function renderFullHTML(container, fullHtmlCode) {
+    // Create a wrapper
     const wrapper = document.createElement('div');
     wrapper.className = 'html-resource-wrapper';
     
-    // Add CSS
-    if (resource.css) {
+    // Extract and handle CSS from <style> tags
+    const styleRegex = /<style[^>]*>([\s\S]*?)<\/style>/gi;
+    let styleMatch;
+    while ((styleMatch = styleRegex.exec(fullHtmlCode)) !== null) {
         const style = document.createElement('style');
-        style.textContent = resource.css;
+        style.textContent = styleMatch[1];
         wrapper.appendChild(style);
     }
     
-    // Add HTML
-    if (resource.html) {
-        const htmlContainer = document.createElement('div');
-        htmlContainer.innerHTML = resource.html;
-        wrapper.appendChild(htmlContainer);
+    // Extract and handle JavaScript from <script> tags
+    const scriptRegex = /<script[^>]*>([\s\S]*?)<\/script>/gi;
+    const scripts = [];
+    let scriptMatch;
+    while ((scriptMatch = scriptRegex.exec(fullHtmlCode)) !== null) {
+        scripts.push(scriptMatch[1]);
     }
+    
+    // Remove style and script tags from HTML
+    let cleanHtml = fullHtmlCode;
+    cleanHtml = cleanHtml.replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '');
+    cleanHtml = cleanHtml.replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '');
+    
+    // Remove DOCTYPE, html, head, body tags if present to get just the content
+    cleanHtml = cleanHtml.replace(/<!DOCTYPE[^>]*>/gi, '');
+    cleanHtml = cleanHtml.replace(/<\/?html[^>]*>/gi, '');
+    cleanHtml = cleanHtml.replace(/<\/?head[^>]*>/gi, '');
+    cleanHtml = cleanHtml.replace(/<\/?body[^>]*>/gi, '');
+    
+    // Set the cleaned HTML
+    const htmlContainer = document.createElement('div');
+    htmlContainer.innerHTML = cleanHtml.trim();
+    wrapper.appendChild(htmlContainer);
     
     container.appendChild(wrapper);
     
     // Execute JavaScript
-    if (resource.js) {
-        try {
-            // Create a function with the container as context
-            const scriptFunc = new Function('container', resource.js);
-            scriptFunc.call(wrapper, wrapper);
-        } catch (error) {
-            console.error('Error ejecutando JavaScript del recurso:', error);
-            const errorDiv = document.createElement('div');
-            errorDiv.style.color = '#dc3545';
-            errorDiv.style.padding = '10px';
-            errorDiv.style.background = '#f8d7da';
-            errorDiv.style.borderRadius = '4px';
-            errorDiv.textContent = 'Error en JavaScript: ' + error.message;
-            container.appendChild(errorDiv);
+    scripts.forEach(scriptContent => {
+        if (scriptContent.trim()) {
+            try {
+                const scriptFunc = new Function('container', scriptContent);
+                scriptFunc.call(wrapper, wrapper);
+            } catch (error) {
+                console.error('Error ejecutando JavaScript:', error);
+                const errorDiv = document.createElement('div');
+                errorDiv.style.color = '#dc3545';
+                errorDiv.style.padding = '10px';
+                errorDiv.style.background = '#f8d7da';
+                errorDiv.style.borderRadius = '4px';
+                errorDiv.style.marginTop = '10px';
+                errorDiv.textContent = 'Error en JavaScript: ' + error.message;
+                container.appendChild(errorDiv);
+            }
         }
-    }
+    });
 }
 
 // Utility functions

@@ -82,16 +82,24 @@
                 <!-- Campos para HTML -->
                 <div id="htmlFields" class="resource-fields" style="display: none;">
                     <div class="form-group">
-                        <label for="htmlCode">Código HTML:</label>
-                        <textarea id="htmlCode" rows="8" placeholder="<div>Tu contenido HTML aquí...</div>"></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="cssCode">Código CSS:</label>
-                        <textarea id="cssCode" rows="8" placeholder=".tu-clase { color: #030303; }"></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="jsCode">Código JavaScript:</label>
-                        <textarea id="jsCode" rows="8" placeholder="console.log('Tu código JS aquí');"></textarea>
+                        <label for="fullHtmlCode">Código HTML Completo:</label>
+                        <p style="font-size: 0.9rem; color: #666; margin-bottom: 10px;">
+                            Pega tu código HTML completo aquí. Puede incluir tags &lt;style&gt; para CSS y &lt;script&gt; para JavaScript.
+                        </p>
+                        <textarea id="fullHtmlCode" rows="20" placeholder="<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        /* Tu CSS aquí */
+    </style>
+</head>
+<body>
+    <!-- Tu HTML aquí -->
+    <script>
+        // Tu JavaScript aquí
+    </script>
+</body>
+</html>"></textarea>
                     </div>
                     <div class="form-group">
                         <button type="button" id="previewBtn" class="btn btn-secondary">Vista Previa</button>
