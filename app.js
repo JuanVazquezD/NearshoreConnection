@@ -22,6 +22,7 @@ function initializeEventListeners() {
     document.getElementById('themeForm').addEventListener('submit', handleThemeSubmit);
     document.getElementById('subtopicForm').addEventListener('submit', handleSubtopicSubmit);
     document.getElementById('resourceForm').addEventListener('submit', handleResourceSubmit);
+    document.getElementById('uploadForm').addEventListener('submit', handleUploadSubmit);
 
     // Resource type selector
     document.getElementById('resourceType').addEventListener('change', handleResourceTypeChange);
@@ -99,7 +100,8 @@ function handleThemeSubmit(e) {
             id: Date.now().toString(),
             name: name,
             description: description,
-            subtopics: []
+            subtopics: [],
+            attachments: []
         };
         themes.push(newTheme);
     }
@@ -135,7 +137,8 @@ function handleSubtopicSubmit(e) {
         const newSubtopic = {
             id: Date.now().toString(),
             name: name,
-            resources: []
+            resources: [],
+            attachments: []
         };
         theme.subtopics.push(newSubtopic);
         
@@ -273,6 +276,9 @@ function renderThemes() {
                     <button class="btn btn-secondary btn-small" onclick="openSubtopicModal('${theme.id}')">
                         + Agregar Subtema
                     </button>
+                    <button class="btn btn-secondary btn-small" onclick="openUploadModal('theme', '${theme.id}')">
+                        📎 Subir Info
+                    </button>
                     <button class="btn btn-danger btn-small" onclick="deleteTheme('${theme.id}')">
                         Eliminar
                     </button>
@@ -284,6 +290,29 @@ function renderThemes() {
                     ${theme.subtopics.map(subtopic => renderSubtopic(theme.id, subtopic)).join('')}
                 </div>
             ` : '<p style="color: #666; font-style: italic;">No hay subtemas en este tema</p>'}
+            
+            ${theme.attachments && theme.attachments.length > 0 ? `
+                <div class="attachments-section" style="margin-top: 20px; padding-top: 15px; border-top: 1px solid #dee2e6;">
+                    <h4 style="font-size: 1rem; color: var(--primary-dark); margin-bottom: 10px;">📎 Archivos Adjuntos:</h4>
+                    <div class="attachments-list">
+                        ${theme.attachments.map(att => `
+                            <div class="attachment-item" style="display: flex; align-items: center; gap: 10px; padding: 8px; background: #f8f9fa; border-radius: 6px; margin-bottom: 8px;">
+                                <span style="font-size: 1.5rem;">${getFileIcon(att.name)}</span>
+                                <div style="flex: 1;">
+                                    <strong>${escapeHtml(att.title)}</strong>
+                                    ${att.description ? `<br><small style="color: #666;">${escapeHtml(att.description)}</small>` : ''}
+                                </div>
+                                <a href="${att.dataUrl}" download="${att.name}" class="btn btn-secondary btn-small" style="text-decoration: none;">
+                                    ⬇ Descargar
+                                </a>
+                                <button class="btn btn-danger btn-small" onclick="deleteAttachment('theme', '${theme.id}', null, '${att.id}')">
+                                    🗑
+                                </button>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            ` : ''}
         </div>
     `).join('');
 }
@@ -297,6 +326,9 @@ function renderSubtopic(themeId, subtopic) {
                     <button class="btn btn-secondary btn-small" onclick="openResourceModal('${themeId}', '${subtopic.id}')">
                         + Agregar Recurso
                     </button>
+                    <button class="btn btn-secondary btn-small" onclick="openUploadModal('subtopic', '${themeId}', '${subtopic.id}')">
+                        📎 Subir Info
+                    </button>
                     <button class="btn btn-danger btn-small" onclick="deleteSubtopic('${themeId}', '${subtopic.id}')">
                         Eliminar
                     </button>
@@ -308,6 +340,29 @@ function renderSubtopic(themeId, subtopic) {
                     ${subtopic.resources.map(resource => renderResource(themeId, subtopic.id, resource)).join('')}
                 </div>
             ` : '<p style="color: #999; font-size: 0.9rem; margin-top: 10px;">No hay recursos en este subtema</p>'}
+            
+            ${subtopic.attachments && subtopic.attachments.length > 0 ? `
+                <div class="attachments-section" style="margin-top: 15px; padding-top: 10px; border-top: 1px dashed #ccc;">
+                    <h5 style="font-size: 0.9rem; color: var(--primary-dark); margin-bottom: 8px;">📎 Archivos:</h5>
+                    <div class="attachments-list">
+                        ${subtopic.attachments.map(att => `
+                            <div class="attachment-item" style="display: flex; align-items: center; gap: 8px; padding: 6px; background: white; border-radius: 4px; margin-bottom: 6px; font-size: 0.9rem;">
+                                <span>${getFileIcon(att.name)}</span>
+                                <div style="flex: 1;">
+                                    <strong>${escapeHtml(att.title)}</strong>
+                                    ${att.description ? `<br><small style="color: #666;">${escapeHtml(att.description)}</small>` : ''}
+                                </div>
+                                <a href="${att.dataUrl}" download="${att.name}" class="btn btn-secondary btn-small" style="text-decoration: none; font-size: 0.8rem; padding: 4px 8px;">
+                                    ⬇
+                                </a>
+                                <button class="btn btn-danger btn-small" onclick="deleteAttachment('subtopic', '${themeId}', '${subtopic.id}', '${att.id}')" style="font-size: 0.8rem; padding: 4px 8px;">
+                                    🗑
+                                </button>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            ` : ''}
         </div>
     `;
 }
@@ -426,12 +481,23 @@ function renderFullHTML(container, fullHtmlCode) {
         wrapper.appendChild(style);
     }
     
-    // Extract and handle JavaScript from <script> tags
-    const scriptRegex = /<script[^>]*>([\s\S]*?)<\/script>/gi;
-    const scripts = [];
+    // Extract external scripts and inline scripts separately
+    const scriptSrcRegex = /<script[^>]+src=["']([^"']+)["'][^>]*>[\s\S]*?<\/script>/gi;
+    const scriptInlineRegex = /<script(?![^>]*src=)([^>]*)>([\s\S]*?)<\/script>/gi;
+    
+    const externalScripts = [];
+    const inlineScripts = [];
+    
     let scriptMatch;
-    while ((scriptMatch = scriptRegex.exec(fullHtmlCode)) !== null) {
-        scripts.push(scriptMatch[1]);
+    
+    // Extract external scripts
+    while ((scriptMatch = scriptSrcRegex.exec(fullHtmlCode)) !== null) {
+        externalScripts.push(scriptMatch[1]);
+    }
+    
+    // Extract inline scripts
+    while ((scriptMatch = scriptInlineRegex.exec(fullHtmlCode)) !== null) {
+        inlineScripts.push(scriptMatch[2]);
     }
     
     // Remove style and script tags from HTML
@@ -445,6 +511,19 @@ function renderFullHTML(container, fullHtmlCode) {
     cleanHtml = cleanHtml.replace(/<\/?head[^>]*>/gi, '');
     cleanHtml = cleanHtml.replace(/<\/?body[^>]*>/gi, '');
     
+    // Extract link tags (fonts, stylesheets)
+    const linkRegex = /<link[^>]+>/gi;
+    let linkMatch;
+    while ((linkMatch = linkRegex.exec(fullHtmlCode)) !== null) {
+        const linkElement = document.createElement('div');
+        linkElement.innerHTML = linkMatch[0];
+        const actualLink = linkElement.firstChild;
+        if (actualLink) {
+            wrapper.appendChild(actualLink.cloneNode(true));
+        }
+    }
+    cleanHtml = cleanHtml.replace(/<link[^>]+>/gi, '');
+    
     // Set the cleaned HTML
     const htmlContainer = document.createElement('div');
     htmlContainer.innerHTML = cleanHtml.trim();
@@ -452,24 +531,153 @@ function renderFullHTML(container, fullHtmlCode) {
     
     container.appendChild(wrapper);
     
-    // Execute JavaScript
-    scripts.forEach(scriptContent => {
-        if (scriptContent.trim()) {
-            try {
-                const scriptFunc = new Function('container', scriptContent);
-                scriptFunc.call(wrapper, wrapper);
-            } catch (error) {
-                console.error('Error ejecutando JavaScript:', error);
-                const errorDiv = document.createElement('div');
-                errorDiv.style.color = '#dc3545';
-                errorDiv.style.padding = '10px';
-                errorDiv.style.background = '#f8d7da';
-                errorDiv.style.borderRadius = '4px';
-                errorDiv.style.marginTop = '10px';
-                errorDiv.textContent = 'Error en JavaScript: ' + error.message;
-                container.appendChild(errorDiv);
+    // Load external scripts first, then execute inline scripts
+    loadScriptsSequentially(externalScripts, wrapper)
+        .then(() => {
+            // Wait for Chart.js and Plotly to be available
+            const libraryChecks = [];
+            
+            // Check if Chart.js is needed
+            if (externalScripts.some(url => url.includes('chart') || url.includes('Chart'))) {
+                libraryChecks.push(waitForLibrary('Chart'));
             }
+            
+            // Check if Plotly is needed
+            if (externalScripts.some(url => url.includes('plotly') || url.includes('Plotly'))) {
+                libraryChecks.push(waitForLibrary('Plotly'));
+            }
+            
+            return Promise.all(libraryChecks);
+        })
+        .then(() => {
+            console.log('Todas las librerías están listas. Esperando a que el DOM esté listo...');
+            
+            // Wait for DOM to be fully rendered before executing scripts
+            return new Promise(resolve => setTimeout(resolve, 500));
+        })
+        .then(() => {
+            console.log('DOM listo. Ejecutando scripts...');
+            
+            // Execute inline scripts after external scripts are loaded and DOM is ready
+            inlineScripts.forEach((scriptContent, index) => {
+                if (scriptContent.trim()) {
+                    try {
+                        console.log(`Ejecutando script inline ${index + 1}...`);
+                        
+                        // Replace DOMContentLoaded with immediate execution since DOM is already loaded
+                        let modifiedScript = scriptContent;
+                        
+                        // Replace all variations of DOMContentLoaded listeners
+                        modifiedScript = modifiedScript.replace(
+                            /document\.addEventListener\s*\(\s*['"]DOMContentLoaded['"]\s*,\s*function\s*\(\)\s*{/g,
+                            '(function() {'
+                        );
+                        
+                        modifiedScript = modifiedScript.replace(
+                            /document\.addEventListener\s*\(\s*['"]DOMContentLoaded['"]\s*,\s*\(\)\s*=>\s*{/g,
+                            '(function() {'
+                        );
+                        
+                        // Close the IIFE at the end if we made replacements
+                        if (modifiedScript !== scriptContent) {
+                            // Find the last }); and replace with })();
+                            const lastIndex = modifiedScript.lastIndexOf('});');
+                            if (lastIndex !== -1) {
+                                modifiedScript = modifiedScript.substring(0, lastIndex) + '})();' + modifiedScript.substring(lastIndex + 3);
+                            }
+                        }
+                        
+                        // Also handle if (document.readyState === 'loading')
+                        modifiedScript = modifiedScript.replace(
+                            /if\s*\(\s*document\.readyState\s*===\s*['"]loading['"]\s*\)\s*{/g,
+                            'if (false) {'
+                        );
+                        
+                        // Execute in global context so libraries are accessible
+                        const scriptFunc = new Function(modifiedScript);
+                        scriptFunc.call(window);
+                        console.log(`Script ${index + 1} ejecutado exitosamente`);
+                    } catch (error) {
+                        console.error('Error ejecutando JavaScript:', error);
+                        const errorDiv = document.createElement('div');
+                        errorDiv.style.color = '#dc3545';
+                        errorDiv.style.padding = '10px';
+                        errorDiv.style.background = '#f8d7da';
+                        errorDiv.style.borderRadius = '4px';
+                        errorDiv.style.marginTop = '10px';
+                        errorDiv.innerHTML = `<strong>Error en JavaScript:</strong><br>${error.message}<br><small>${error.stack}</small>`;
+                        container.appendChild(errorDiv);
+                    }
+                }
+            });
+        })
+        .catch(error => {
+            console.error('Error cargando scripts externos:', error);
+            const errorDiv = document.createElement('div');
+            errorDiv.style.color = '#dc3545';
+            errorDiv.style.padding = '10px';
+            errorDiv.style.background = '#f8d7da';
+            errorDiv.style.borderRadius = '4px';
+            errorDiv.style.marginTop = '10px';
+            errorDiv.innerHTML = `<strong>Error cargando librerías:</strong><br>${error.message}<br><small>Verifica tu conexión a internet</small>`;
+            container.appendChild(errorDiv);
+        });
+}
+
+function loadScriptsSequentially(scriptUrls, container) {
+    return scriptUrls.reduce((promise, url) => {
+        return promise.then(() => loadScript(url, container));
+    }, Promise.resolve());
+}
+
+function loadScript(url, container) {
+    return new Promise((resolve, reject) => {
+        // Check if script is already loaded globally
+        const existingScript = document.querySelector(`script[src="${url}"]`);
+        if (existingScript) {
+            // Script already loaded, wait a bit to ensure it's ready
+            setTimeout(() => {
+                console.log(`Script ya existente: ${url}`);
+                resolve();
+            }, 100);
+            return;
         }
+        
+        const script = document.createElement('script');
+        script.src = url;
+        script.async = false; // Load in order
+        
+        script.onload = () => {
+            console.log(`Script cargado exitosamente: ${url}`);
+            // Wait a bit to ensure the library is fully initialized
+            setTimeout(() => resolve(), 200);
+        };
+        
+        script.onerror = () => {
+            console.error(`Error cargando script: ${url}`);
+            reject(new Error(`No se pudo cargar: ${url}`));
+        };
+        
+        // Append to document head for global availability
+        document.head.appendChild(script);
+    });
+}
+
+// Helper function to wait for libraries to be available
+function waitForLibrary(libraryName, maxAttempts = 50) {
+    return new Promise((resolve, reject) => {
+        let attempts = 0;
+        const checkInterval = setInterval(() => {
+            attempts++;
+            if (window[libraryName]) {
+                clearInterval(checkInterval);
+                console.log(`Librería ${libraryName} disponible`);
+                resolve();
+            } else if (attempts >= maxAttempts) {
+                clearInterval(checkInterval);
+                reject(new Error(`Timeout esperando ${libraryName}`));
+            }
+        }, 100);
     });
 }
 
@@ -483,6 +691,126 @@ function escapeHtml(text) {
         "'": '&#039;'
     };
     return text.replace(/[&<>"']/g, m => map[m]);
+}
+
+// Upload/Attachment functions
+let currentUploadType = null;
+let currentUploadThemeId = null;
+let currentUploadSubtopicId = null;
+
+function openUploadModal(type, themeId, subtopicId = null) {
+    currentUploadType = type;
+    currentUploadThemeId = themeId;
+    currentUploadSubtopicId = subtopicId;
+    
+    const modal = document.getElementById('uploadModal');
+    const title = document.getElementById('uploadModalTitle');
+    
+    if (type === 'theme') {
+        const theme = themes.find(t => t.id === themeId);
+        title.textContent = `Subir Información - ${theme.name}`;
+    } else if (type === 'subtopic') {
+        const theme = themes.find(t => t.id === themeId);
+        const subtopic = theme?.subtopics.find(s => s.id === subtopicId);
+        title.textContent = `Subir Información - ${subtopic.name}`;
+    }
+    
+    document.getElementById('uploadForm').reset();
+    modal.style.display = 'block';
+}
+
+function handleUploadSubmit(e) {
+    e.preventDefault();
+    
+    const title = document.getElementById('uploadTitle').value;
+    const description = document.getElementById('uploadDescription').value;
+    const fileInput = document.getElementById('uploadFile');
+    const file = fileInput.files[0];
+    
+    if (!file) {
+        alert('Por favor selecciona un archivo');
+        return;
+    }
+    
+    // Convert file to base64
+    const reader = new FileReader();
+    reader.onload = function(event) {
+        const attachment = {
+            id: Date.now().toString(),
+            title: title,
+            description: description,
+            name: file.name,
+            type: file.type,
+            size: file.size,
+            dataUrl: event.target.result,
+            uploadDate: new Date().toISOString()
+        };
+        
+        // Add attachment to appropriate location
+        if (currentUploadType === 'theme') {
+            const theme = themes.find(t => t.id === currentUploadThemeId);
+            if (theme) {
+                if (!theme.attachments) theme.attachments = [];
+                theme.attachments.push(attachment);
+            }
+        } else if (currentUploadType === 'subtopic') {
+            const theme = themes.find(t => t.id === currentUploadThemeId);
+            if (theme) {
+                const subtopic = theme.subtopics.find(s => s.id === currentUploadSubtopicId);
+                if (subtopic) {
+                    if (!subtopic.attachments) subtopic.attachments = [];
+                    subtopic.attachments.push(attachment);
+                }
+            }
+        }
+        
+        saveToLocalStorage();
+        renderThemes();
+        document.getElementById('uploadModal').style.display = 'none';
+        alert('✅ Archivo subido exitosamente');
+    };
+    
+    reader.onerror = function() {
+        alert('❌ Error al leer el archivo');
+    };
+    
+    reader.readAsDataURL(file);
+}
+
+function deleteAttachment(type, themeId, subtopicId, attachmentId) {
+    if (!confirm('¿Eliminar este archivo adjunto?')) return;
+    
+    if (type === 'theme') {
+        const theme = themes.find(t => t.id === themeId);
+        if (theme && theme.attachments) {
+            theme.attachments = theme.attachments.filter(a => a.id !== attachmentId);
+        }
+    } else if (type === 'subtopic') {
+        const theme = themes.find(t => t.id === themeId);
+        if (theme) {
+            const subtopic = theme.subtopics.find(s => s.id === subtopicId);
+            if (subtopic && subtopic.attachments) {
+                subtopic.attachments = subtopic.attachments.filter(a => a.id !== attachmentId);
+            }
+        }
+    }
+    
+    saveToLocalStorage();
+    renderThemes();
+}
+
+function getFileIcon(filename) {
+    const ext = filename.split('.').pop().toLowerCase();
+    const icons = {
+        'pdf': '📄',
+        'doc': '📝', 'docx': '📝',
+        'xls': '📊', 'xlsx': '📊',
+        'ppt': '📽️', 'pptx': '📽️',
+        'jpg': '🖼️', 'jpeg': '🖼️', 'png': '🖼️', 'gif': '🖼️',
+        'zip': '🗜️', 'rar': '🗜️',
+        'txt': '📃'
+    };
+    return icons[ext] || '📎';
 }
 
 // Export/Import functions (bonus feature)

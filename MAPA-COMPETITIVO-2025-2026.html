@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mapa Competitivo Nearshore Connection – Eventos Manufactura</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Estilos adicionales para mejorar la visualización */
+    body {
+      background: linear-gradient(to bottom, #020617, #0f172a);
+      min-height: 100vh;
+    }
+    
+    .card-hover {
+      transition: all 0.3s ease;
+    }
+    
+    .card-hover:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 30px rgba(16, 185, 129, 0.2);
+    }
+    
+    /* Mejor contraste para tablas */
+    table {
+      border-collapse: separate;
+      border-spacing: 0;
+    }
+    
+    tbody tr:hover {
+      background-color: rgba(16, 185, 129, 0.05);
+    }
+    
+    /* Animación suave al cargar */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .animate-fade-in {
+      animation: fadeInUp 0.6s ease-out;
+    }
+    
+    /* Scrollbar personalizado */
+    ::-webkit-scrollbar {
+      width: 10px;
+      height: 10px;
+    }
+    
+    ::-webkit-scrollbar-track {
+      background: #0f172a;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+      background: #10b981;
+      border-radius: 5px;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+      background: #059669;
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100">
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-12">
+    
+    <!-- Encabezado -->
+    <section class="text-center space-y-4 animate-fade-in">
+      <div class="inline-block px-4 py-1 bg-emerald-500/20 border border-emerald-400/40 rounded-full mb-4">
+        <span class="text-emerald-300 text-sm font-semibold">📊 Análisis Competitivo 2025-2026</span>
+      </div>
+      <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
+        Mapa Competitivo Nearshoring
+      </h1>
+      <h2 class="text-xl md:text-2xl font-semibold text-slate-300">
+        Eventos de Manufactura en Norteamérica
+      </h2>
+      <p class="text-slate-400 max-w-3xl mx-auto text-base md:text-lg leading-relaxed">
+        Benchmark de conferencias, summits y plataformas B2B que compiten con
+        <strong class="text-emerald-400">Nearshore Connection</strong> en la organización de eventos para la cadena de
+        suministro manufacturera bajo el marco USMCA/T-MEC.
+      </p>
+      
+      <!-- Acceso a NotebookLM -->
+      <div class="mt-6 flex justify-center">
+        <a href="https://notebooklm.google.com/notebook/32dc755a-3128-4c80-9826-5678ec0d4f3a" 
+           target="_blank" 
+           rel="noopener noreferrer"
+           class="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-purple-500/20 to-pink-500/20 border-2 border-purple-400/60 rounded-xl text-purple-200 hover:from-purple-500/30 hover:to-pink-500/30 hover:border-purple-300 transition-all transform hover:scale-105 shadow-lg shadow-purple-500/20">
+          <span class="text-2xl">📚</span>
+          <div class="text-left">
+            <div class="font-bold text-sm">Acceder al Cuaderno NotebookLM</div>
+            <div class="text-xs text-purple-300">Chat interactivo y análisis profundo</div>
+          </div>
+          <span class="text-xl">→</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- Bloque 1: Contexto del mercado -->
+    <section class="grid md:grid-cols-3 gap-6 animate-fade-in">
+      <div class="bg-slate-900/80 border border-slate-700 rounded-2xl p-6 card-hover backdrop-blur-sm">
+        <div class="flex items-center gap-3 mb-4">
+          <span class="text-3xl">🌎</span>
+          <h2 class="text-xl font-bold text-emerald-400">Contexto USMCA</h2>
+        </div>
+        <ul class="space-y-3 text-sm text-slate-300">
+          <li class="flex items-start gap-2">
+            <span class="text-emerald-400 mt-1">▸</span>
+            <span>USMCA favorece comercio con aranceles reducidos o nulos entre México, EE. UU. y Canadá</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <span class="text-emerald-400 mt-1">▸</span>
+            <span>Aumenta la relocalización de producción hacia México para reducir costos y tiempos logísticos</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <span class="text-emerald-400 mt-1">▸</span>
+            <span>Sectores clave: automotriz, autopartes, electrónica, maquinaria, electrodomésticos y dispositivos médicos</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="bg-slate-900/80 border border-slate-700 rounded-2xl p-6 card-hover backdrop-blur-sm">
+        <div class="flex items-center gap-3 mb-4">
+          <span class="text-3xl">📈</span>
+          <h2 class="text-xl font-bold text-cyan-400">Tendencias de eventos</h2>
+        </div>
+        <ul class="space-y-3 text-sm text-slate-300">
+          <li class="flex items-start gap-2">
+            <span class="text-cyan-400 mt-1">▸</span>
+            <span>Crecimiento de summits especializados en nearshoring y cadenas de suministro transfronterizas</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <span class="text-cyan-400 mt-1">▸</span>
+            <span>Mayor foco en matchmaking B2B y agendas de citas pre-agendadas entre OEMs y proveedores</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <span class="text-cyan-400 mt-1">▸</span>
+            <span>Integración de temas: logística, cumplimiento USMCA, talento, automatización e Industria 4.0</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="bg-gradient-to-br from-emerald-500/20 to-cyan-500/20 border-2 border-emerald-400/60 rounded-2xl p-6 card-hover backdrop-blur-sm shadow-lg shadow-emerald-500/20">
+        <div class="flex items-center gap-3 mb-4">
+          <span class="text-3xl">🎯</span>
+          <h2 class="text-xl font-bold text-emerald-200">Oportunidad NC</h2>
+        </div>
+        <ul class="space-y-3 text-sm text-emerald-50">
+          <li class="flex items-start gap-2">
+            <span class="text-emerald-300 mt-1">✓</span>
+            <span>Posicionarse como plataforma especializada en manufactura Norteamérica con enfoque México-frontera norte</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <span class="text-emerald-300 mt-1">✓</span>
+            <span>Diferenciarse por curaduría de compradores, agendas B2B accionables y contenidos tácticos para PYMEs industriales</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <span class="text-emerald-300 mt-1">✓</span>
+            <span>Integrar narrativa clara de USMCA, nearshoring y ventajas competitivas de México para el C-level manufacturero</span>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Bloque 2: Principales competidores por tipo -->
+    <section class="space-y-6 animate-fade-in">
+      <div class="text-center">
+        <h2 class="text-3xl md:text-4xl font-bold text-white mb-2">
+          Tipologías de Competencia
+        </h2>
+        <p class="text-slate-400">Eventos Manufactura & Nearshoring en Norteamérica</p>
+      </div>
+      
+      <div class="grid md:grid-cols-3 gap-6">
+        <!-- A. Grandes summits y ferias -->
+        <article class="bg-slate-900/80 border border-slate-700 rounded-2xl p-6 card-hover backdrop-blur-sm">
+          <div class="flex items-start gap-3 mb-4">
+            <span class="text-4xl">🏢</span>
+            <div>
+              <h3 class="text-lg font-bold text-emerald-300 mb-1">
+                Ferias y mega-shows
+              </h3>
+              <p class="text-xs text-slate-500 uppercase tracking-wide">Categoría A</p>
+            </div>
+          </div>
+          <p class="text-sm text-slate-300 mb-4">
+            Eventos de gran escala con miles de asistentes, fuerte componente de expo y presencia global.
+          </p>
+          <div class="space-y-2 mb-4">
+            <div class="bg-slate-800/50 rounded-lg p-3">
+              <p class="text-sm font-semibold text-white">• NAMES (Houston)</p>
+              <p class="text-xs text-slate-400">North American Manufacturing Excellence Summit</p>
+            </div>
+            <div class="bg-slate-800/50 rounded-lg p-3">
+              <p class="text-sm font-semibold text-white">• FABTECH</p>
+              <p class="text-xs text-slate-400">EE. UU., México, Canadá</p>
+            </div>
+            <div class="bg-slate-800/50 rounded-lg p-3">
+              <p class="text-sm font-semibold text-white">• MD&M / IME South</p>
+              <p class="text-xs text-slate-400">Shows tecnológicos</p>
+            </div>
+          </div>
+          <div class="border-t border-slate-700 pt-4 space-y-2">
+            <p class="text-xs text-emerald-400 font-semibold">✓ Fortalezas:</p>
+            <p class="text-xs text-slate-400">Marca fuerte, gran audiencia, agenda senior-level</p>
+            <p class="text-xs text-red-400 font-semibold mt-2">✗ Debilidades:</p>
+            <p class="text-xs text-slate-400">Experiencias menos personalizadas, menor foco regional en México</p>
+          </div>
+        </article>
+
+        <!-- B. Summits especializados nearshoring -->
+        <article class="bg-slate-900/80 border border-slate-700 rounded-2xl p-6 card-hover backdrop-blur-sm">
+          <div class="flex items-start gap-3 mb-4">
+            <span class="text-4xl">🤝</span>
+            <div>
+              <h3 class="text-lg font-bold text-cyan-300 mb-1">
+                Summits nearshoring
+              </h3>
+              <p class="text-xs text-slate-500 uppercase tracking-wide">Categoría B</p>
+            </div>
+          </div>
+          <p class="text-sm text-slate-300 mb-4">
+            Cumbres centradas en USMCA, cadenas de suministro y manufactura México-EE. UU.-Canadá.
+          </p>
+          <div class="space-y-2 mb-4">
+            <div class="bg-slate-800/50 rounded-lg p-3">
+              <p class="text-sm font-semibold text-white">• Manufacturing & SC Nearshoring Summit</p>
+              <p class="text-xs text-slate-400">Multi-sedes</p>
+            </div>
+            <div class="bg-slate-800/50 rounded-lg p-3">
+              <p class="text-sm font-semibold text-white">• El Paso Nearshoring Summit</p>
+              <p class="text-xs text-slate-400">Sedes fronterizas</p>
+            </div>
+            <div class="bg-slate-800/50 rounded-lg p-3">
+              <p class="text-sm font-semibold text-white">• Mexico Nearshoring Summit</p>
+              <p class="text-xs text-slate-400">Enfoque México</p>
+            </div>
+          </div>
+          <div class="border-t border-slate-700 pt-4 space-y-2">
+            <p class="text-xs text-emerald-400 font-semibold">✓ Fortalezas:</p>
+            <p class="text-xs text-slate-400">Alto enfoque en nearshoring, sesiones sobre costos, logística, USMCA</p>
+            <p class="text-xs text-red-400 font-semibold mt-2">✗ Debilidades:</p>
+            <p class="text-xs text-slate-400">Saturación de discursos similares</p>
+          </div>
+        </article>
+
+        <!-- C. Plataformas de matchmaking -->
+        <article class="bg-slate-900/80 border border-slate-700 rounded-2xl p-6 card-hover backdrop-blur-sm">
+          <div class="flex items-start gap-3 mb-4">
+            <span class="text-4xl">🔗</span>
+            <div>
+              <h3 class="text-lg font-bold text-purple-300 mb-1">
+                Matchmaking & consultoras
+              </h3>
+              <p class="text-xs text-slate-500 uppercase tracking-wide">Categoría C</p>
+            </div>
+          </div>
+          <p class="text-sm text-slate-300 mb-4">
+            Empresas que combinan servicios de consultoría, soft-landing y eventos o programas B2B.
+          </p>
+          <div class="space-y-2 mb-4">
+            <div class="bg-slate-800/50 rounded-lg p-3">
+              <p class="text-sm font-semibold text-white">• Nearshoring Partner Matchmaking</p>
+              <p class="text-xs text-slate-400">Directorios de fabricantes</p>
+            </div>
+            <div class="bg-slate-800/50 rounded-lg p-3">
+              <p class="text-sm font-semibold text-white">• Consultoras de manufactura</p>
+              <p class="text-xs text-slate-400">Roadshows y foros ejecutivos</p>
+            </div>
+          </div>
+          <div class="border-t border-slate-700 pt-4 space-y-2">
+            <p class="text-xs text-emerald-400 font-semibold">✓ Fortalezas:</p>
+            <p class="text-xs text-slate-400">Acompañamiento 360° a la empresa</p>
+            <p class="text-xs text-red-400 font-semibold mt-2">✗ Debilidades:</p>
+            <p class="text-xs text-slate-400">Eventos más cerrados, menos visibles como marca independiente</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- Bloque 3: Tabla comparativa -->
+    <section class="space-y-6 animate-fade-in">
+      <div class="text-center">
+        <h2 class="text-3xl md:text-4xl font-bold text-white mb-2">
+          Comparativo Competitivo
+        </h2>
+        <p class="text-slate-400">Nearshore Connection vs. principales formatos</p>
+      </div>
+      
+      <div class="overflow-x-auto rounded-2xl border border-slate-700 bg-slate-900/80 backdrop-blur-sm">
+        <table class="min-w-full text-sm">
+          <thead>
+            <tr class="bg-slate-800/80">
+              <th class="px-4 py-4 text-left font-bold text-emerald-400 border-b-2 border-emerald-500/30">Dimensión</th>
+              <th class="px-4 py-4 text-left font-bold text-slate-300 border-b-2 border-emerald-500/30">Mega-ferias</th>
+              <th class="px-4 py-4 text-left font-bold text-slate-300 border-b-2 border-emerald-500/30">Summits nearshoring</th>
+              <th class="px-4 py-4 text-left font-bold text-emerald-300 border-b-2 border-emerald-500/30">
+                Nearshore Connection
+                <span class="block text-xs font-normal text-emerald-400/80">Propuesta deseada</span>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="border-b border-slate-800 hover:bg-slate-800/40 transition">
+              <td class="px-4 py-4 font-semibold text-white">🗺️ Enfoque geográfico</td>
+              <td class="px-4 py-4 text-slate-300">Norteamérica y mercados globales; sede rotativa EE. UU. / Canadá</td>
+              <td class="px-4 py-4 text-slate-300">Frontera México-EE. UU. y hubs industriales mexicanos</td>
+              <td class="px-4 py-4 text-emerald-100 font-medium">
+                Foco en corredores industriales USMCA (Baja California, Nuevo León, Coahuila, Chihuahua, Tamaulipas)
+              </td>
+            </tr>
+            <tr class="border-b border-slate-800 hover:bg-slate-800/40 transition">
+              <td class="px-4 py-4 font-semibold text-white">🎭 Tipo de experiencia</td>
+              <td class="px-4 py-4 text-slate-300">Expo + keynotes + sesiones técnicas</td>
+              <td class="px-4 py-4 text-slate-300">Conferencias ejecutivas + B2B programado</td>
+              <td class="px-4 py-4 text-emerald-100 font-medium">
+                Curaduría de C-level + B2B de alto valor + visitas a plantas y parques industriales
+              </td>
+            </tr>
+            <tr class="border-b border-slate-800 hover:bg-slate-800/40 transition">
+              <td class="px-4 py-4 font-semibold text-white">🤝 Matchmaking</td>
+              <td class="px-4 py-4 text-slate-300">Networking abierto, citas limitadas estructuradas</td>
+              <td class="px-4 py-4 text-slate-300">Citas pre-agendadas entre OEMs, proveedores y logística</td>
+              <td class="px-4 py-4 text-emerald-100 font-medium">
+                Plataforma digital + perfiles verificados + KPIs post-evento (leads, proyectos, pipelines)
+              </td>
+            </tr>
+            <tr class="border-b border-slate-800 hover:bg-slate-800/40 transition">
+              <td class="px-4 py-4 font-semibold text-white">📚 Narrativa de contenido</td>
+              <td class="px-4 py-4 text-slate-300">Tendencias globales de manufactura e Industria 4.0</td>
+              <td class="px-4 py-4 text-slate-300">USMCA, costos, logística, nearshoring México</td>
+              <td class="px-4 py-4 text-emerald-100 font-medium">
+                Casos de negocio concretos de relocalización + paneles trilaterales (EE. UU., Canadá, México)
+              </td>
+            </tr>
+            <tr class="hover:bg-slate-800/40 transition">
+              <td class="px-4 py-4 font-semibold text-white">💎 Valor para asistentes</td>
+              <td class="px-4 py-4 text-slate-300">Amplia oferta de proveedores y tecnologías</td>
+              <td class="px-4 py-4 text-slate-300">Insights estratégicos y contactos clave para nearshoring</td>
+              <td class="px-4 py-4 text-emerald-100 font-medium">
+                Retorno medible: número de reuniones, oportunidades de negocio y proyectos de inversión generados
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Bloque 4: Recursos y Documentación -->
+    <section class="space-y-6 animate-fade-in">
+      <div class="text-center">
+        <h2 class="text-3xl md:text-4xl font-bold text-white mb-2">
+          📚 Recursos y Documentación
+        </h2>
+        <p class="text-slate-400">Infografías, tablas de datos y presentaciones sobre eventos de manufactura</p>
+      </div>
+
+      <!-- Sistema de Tabs -->
+      <div class="bg-slate-900/80 border border-slate-700 rounded-2xl overflow-hidden backdrop-blur-sm">
+        <!-- Tab Headers -->
+        <div class="flex flex-wrap border-b border-slate-700 bg-slate-800/60">
+          <button class="tab-button active px-6 py-4 text-sm font-semibold transition-all hover:bg-slate-700/50" data-tab="infografias">
+            🖼️ Infografías
+          </button>
+          <button class="tab-button px-6 py-4 text-sm font-semibold transition-all hover:bg-slate-700/50" data-tab="tablas">
+            📊 Tablas de Datos
+          </button>
+          <button class="tab-button px-6 py-4 text-sm font-semibold transition-all hover:bg-slate-700/50" data-tab="presentaciones">
+            📄 Presentaciones PDF
+          </button>
+        </div>
+
+        <!-- Tab Contents -->
+        <div class="p-6">
+          <!-- Tab: Infografías -->
+          <div class="tab-content active" id="tab-infografias">
+            <div class="grid md:grid-cols-3 gap-6">
+              <!-- Infografía 1 -->
+              <div class="bg-slate-800/60 border border-slate-700 rounded-xl overflow-hidden hover:border-emerald-500/50 transition-all group">
+                <div class="aspect-video bg-slate-900 relative overflow-hidden cursor-pointer" onclick="openImageModal('https://drive.google.com/uc?export=view&id=1OZm5UoDU6xOPkd5wShA9RRffvwV_OCrq')">
+                  <img src="https://drive.google.com/uc?export=view&id=1OZm5UoDU6xOPkd5wShA9RRffvwV_OCrq" 
+                       alt="Infografía de Eventos de Manufactura"
+                       class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                       loading="lazy">
+                  <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all flex items-center justify-center">
+                    <span class="text-white text-4xl opacity-0 group-hover:opacity-100 transition-opacity">🔍</span>
+                  </div>
+                </div>
+                <div class="p-4">
+                  <h3 class="font-semibold text-white mb-1">Infografía de Eventos</h3>
+                  <p class="text-xs text-slate-400 mb-3">Panorama visual de eventos de manufactura</p>
+                  <a href="https://drive.google.com/file/d/1OZm5UoDU6xOPkd5wShA9RRffvwV_OCrq/view" 
+                     target="_blank" 
+                     class="text-xs text-emerald-400 hover:text-emerald-300 underline">
+                    Ver en Google Drive →
+                  </a>
+                </div>
+              </div>
+
+              <!-- Mapa Mental 1 -->
+              <div class="bg-slate-800/60 border border-slate-700 rounded-xl overflow-hidden hover:border-emerald-500/50 transition-all group">
+                <div class="aspect-video bg-slate-900 relative overflow-hidden cursor-pointer" onclick="openImageModal('https://drive.google.com/uc?export=view&id=1ikJQo2ZNWz-EiUP3kHJrCBxVGlDlO1Pu')">
+                  <img src="https://drive.google.com/uc?export=view&id=1ikJQo2ZNWz-EiUP3kHJrCBxVGlDlO1Pu" 
+                       alt="Mapa Mental de Eventos"
+                       class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                       loading="lazy">
+                  <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all flex items-center justify-center">
+                    <span class="text-white text-4xl opacity-0 group-hover:opacity-100 transition-opacity">🔍</span>
+                  </div>
+                </div>
+                <div class="p-4">
+                  <h3 class="font-semibold text-white mb-1">Mapa Mental General</h3>
+                  <p class="text-xs text-slate-400 mb-3">Estructura conceptual de eventos</p>
+                  <a href="https://drive.google.com/file/d/1ikJQo2ZNWz-EiUP3kHJrCBxVGlDlO1Pu/view" 
+                     target="_blank" 
+                     class="text-xs text-emerald-400 hover:text-emerald-300 underline">
+                    Ver en Google Drive →
+                  </a>
+                </div>
+              </div>
+
+              <!-- Mapa Mental 2 -->
+              <div class="bg-slate-800/60 border border-slate-700 rounded-xl overflow-hidden hover:border-emerald-500/50 transition-all group">
+                <div class="aspect-video bg-slate-900 relative overflow-hidden cursor-pointer" onclick="openImageModal('https://drive.google.com/uc?export=view&id=1KO1mx9I_1V2Rhv7NgOStRKaSx3SqBQ13')">
+                  <img src="https://drive.google.com/uc?export=view&id=1KO1mx9I_1V2Rhv7NgOStRKaSx3SqBQ13" 
+                       alt="Mapa Mental México"
+                       class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                       loading="lazy">
+                  <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all flex items-center justify-center">
+                    <span class="text-white text-4xl opacity-0 group-hover:opacity-100 transition-opacity">🔍</span>
+                  </div>
+                </div>
+                <div class="p-4">
+                  <h3 class="font-semibold text-white mb-1">Mapa Mental México</h3>
+                  <p class="text-xs text-slate-400 mb-3">Eventos de manufactura en México</p>
+                  <a href="https://drive.google.com/file/d/1KO1mx9I_1V2Rhv7NgOStRKaSx3SqBQ13/view" 
+                     target="_blank" 
+                     class="text-xs text-emerald-400 hover:text-emerald-300 underline">
+                    Ver en Google Drive →
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab: Tablas -->
+          <div class="tab-content hidden" id="tab-tablas">
+            <div class="space-y-6">
+              <!-- Tabla 1 -->
+              <div class="bg-slate-800/60 border border-slate-700 rounded-xl overflow-hidden">
+                <div class="p-4 bg-slate-800/80 border-b border-slate-700 flex items-center justify-between">
+                  <div>
+                    <h3 class="font-semibold text-white">📋 Eventos Principales de Manufactura</h3>
+                    <p class="text-xs text-slate-400 mt-1">Base de datos completa de eventos</p>
+                  </div>
+                  <a href="https://docs.google.com/spreadsheets/d/16T1xt-iFNhLS2NUdsKS6KUMt3X_1KkGBL7cIuoMCDpU/edit" 
+                     target="_blank" 
+                     class="px-4 py-2 bg-emerald-500/20 text-emerald-300 rounded-lg text-xs font-semibold hover:bg-emerald-500/30 transition">
+                    Abrir en Sheets →
+                  </a>
+                </div>
+                <div class="aspect-video bg-slate-900">
+                  <iframe 
+                    src="https://docs.google.com/spreadsheets/d/16T1xt-iFNhLS2NUdsKS6KUMt3X_1KkGBL7cIuoMCDpU/embed?widget=true&headers=false"
+                    class="w-full h-full"
+                    frameborder="0"
+                    allowfullscreen>
+                  </iframe>
+                </div>
+              </div>
+
+              <!-- Tabla 2 -->
+              <div class="bg-slate-800/60 border border-slate-700 rounded-xl overflow-hidden">
+                <div class="p-4 bg-slate-800/80 border-b border-slate-700 flex items-center justify-between">
+                  <div>
+                    <h3 class="font-semibold text-white">📅 Eventos de Manufactura 2026</h3>
+                    <p class="text-xs text-slate-400 mt-1">Calendario especializado para 2026</p>
+                  </div>
+                  <a href="https://docs.google.com/spreadsheets/d/1ekwMk3D_fR07GJQJKbAYC5EUfcb2_QQ5iamDPAumRuI/edit" 
+                     target="_blank" 
+                     class="px-4 py-2 bg-emerald-500/20 text-emerald-300 rounded-lg text-xs font-semibold hover:bg-emerald-500/30 transition">
+                    Abrir en Sheets →
+                  </a>
+                </div>
+                <div class="aspect-video bg-slate-900">
+                  <iframe 
+                    src="https://docs.google.com/spreadsheets/d/1ekwMk3D_fR07GJQJKbAYC5EUfcb2_QQ5iamDPAumRuI/embed?widget=true&headers=false"
+                    class="w-full h-full"
+                    frameborder="0"
+                    allowfullscreen>
+                  </iframe>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab: Presentaciones -->
+          <div class="tab-content hidden" id="tab-presentaciones">
+            <div class="grid md:grid-cols-2 gap-6">
+              <!-- PDF 1 -->
+              <div class="bg-slate-800/60 border border-slate-700 rounded-xl overflow-hidden">
+                <div class="p-4 bg-slate-800/80 border-b border-slate-700">
+                  <h3 class="font-semibold text-white mb-1">📊 Eventos Principales de Manufactura</h3>
+                  <p class="text-xs text-slate-400">Análisis detallado de los principales eventos</p>
+                </div>
+                <div class="aspect-[4/3] bg-slate-900">
+                  <iframe 
+                    src="https://drive.google.com/file/d/11y7n9xEwd6yU2HjNcSRJYabs31ysNyy_/preview"
+                    class="w-full h-full"
+                    frameborder="0"
+                    allow="autoplay">
+                  </iframe>
+                </div>
+                <div class="p-4 flex gap-2">
+                  <a href="https://drive.google.com/file/d/11y7n9xEwd6yU2HjNcSRJYabs31ysNyy_/view" 
+                     target="_blank" 
+                     class="flex-1 px-4 py-2 bg-emerald-500/20 text-emerald-300 rounded-lg text-xs font-semibold hover:bg-emerald-500/30 transition text-center">
+                    📖 Abrir PDF
+                  </a>
+                  <a href="https://drive.google.com/uc?export=download&id=11y7n9xEwd6yU2HjNcSRJYabs31ysNyy_" 
+                     class="flex-1 px-4 py-2 bg-cyan-500/20 text-cyan-300 rounded-lg text-xs font-semibold hover:bg-cyan-500/30 transition text-center">
+                    ⬇️ Descargar
+                  </a>
+                </div>
+              </div>
+
+              <!-- PDF 2 -->
+              <div class="bg-slate-800/60 border border-slate-700 rounded-xl overflow-hidden">
+                <div class="p-4 bg-slate-800/80 border-b border-slate-700">
+                  <h3 class="font-semibold text-white mb-1">🎯 Temas Manufactura 2026</h3>
+                  <p class="text-xs text-slate-400">Temas destacados para destacar en 2026</p>
+                </div>
+                <div class="aspect-[4/3] bg-slate-900">
+                  <iframe 
+                    src="https://drive.google.com/file/d/1QUXieSSFnHuBtNVxdYnxmIw4g2Pvchfp/preview"
+                    class="w-full h-full"
+                    frameborder="0"
+                    allow="autoplay">
+                  </iframe>
+                </div>
+                <div class="p-4 flex gap-2">
+                  <a href="https://drive.google.com/file/d/1QUXieSSFnHuBtNVxdYnxmIw4g2Pvchfp/view" 
+                     target="_blank" 
+                     class="flex-1 px-4 py-2 bg-emerald-500/20 text-emerald-300 rounded-lg text-xs font-semibold hover:bg-emerald-500/30 transition text-center">
+                    📖 Abrir PDF
+                  </a>
+                  <a href="https://drive.google.com/uc?export=download&id=1QUXieSSFnHuBtNVxdYnxmIw4g2Pvchfp" 
+                     class="flex-1 px-4 py-2 bg-cyan-500/20 text-cyan-300 rounded-lg text-xs font-semibold hover:bg-cyan-500/30 transition text-center">
+                    ⬇️ Descargar
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Bloque 5: Insights estratégicos -->
+    <section class="grid md:grid-cols-3 gap-6 animate-fade-in">
+      <div class="bg-slate-900/80 border border-slate-700 rounded-2xl p-6 card-hover backdrop-blur-sm">
+        <div class="flex items-center gap-3 mb-4">
+          <span class="text-3xl">🔍</span>
+          <h3 class="text-lg font-bold text-red-400">Brechas del mercado</h3>
+        </div>
+        <ul class="space-y-3 text-sm text-slate-300">
+          <li class="flex items-start gap-2">
+            <span class="text-red-400 mt-1">•</span>
+            <span>Falta de plataforma única que conecte OEMs norteamericanos con clusters específicos de manufactura mexicana</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <span class="text-red-400 mt-1">•</span>
+            <span>Pocas métricas claras de ROI B2B para asistentes y patrocinadores en eventos actuales</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <span class="text-red-400 mt-1">•</span>
+            <span>Contenido muy genérico sobre nearshoring, con poca profundidad por industria</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="bg-slate-900/80 border border-slate-700 rounded-2xl p-6 card-hover backdrop-blur-sm">
+        <div class="flex items-center gap-3 mb-4">
+          <span class="text-3xl">🎯</span>
+          <h3 class="text-lg font-bold text-cyan-400">Posicionamiento recomendado</h3>
+        </div>
+        <ul class="space-y-3 text-sm text-slate-300">
+          <li class="flex items-start gap-2">
+            <span class="text-cyan-400 mt-1">→</span>
+            <span>Nearshore Connection como <strong class="text-white">"plataforma de negocios"</strong> más que solo conferencia</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <span class="text-cyan-400 mt-1">→</span>
+            <span>Mensaje central: acelerar proyectos de relocalización y sourcing en Norteamérica con foco en México</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <span class="text-cyan-400 mt-1">→</span>
+            <span>Integrar narrativa USMCA 2026 como catalizador para decisiones de inversión y abastecimiento</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="bg-gradient-to-br from-emerald-500/20 to-cyan-500/20 border-2 border-emerald-400/60 rounded-2xl p-6 card-hover backdrop-blur-sm shadow-lg shadow-emerald-500/20">
+        <div class="flex items-center gap-3 mb-4">
+          <span class="text-3xl">⭐</span>
+          <h3 class="text-lg font-bold text-emerald-200">Propuesta de valor clave</h3>
+        </div>
+        <ul class="space-y-3 text-sm text-emerald-50">
+          <li class="flex items-start gap-2">
+            <span class="text-emerald-300 mt-1">✓</span>
+            <span><strong>Curaduría de compradores:</strong> OEMs, Tier 1 y grandes distribuidores con interés real en nearshoring</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <span class="text-emerald-300 mt-1">✓</span>
+            <span><strong>B2B guiado por datos:</strong> segmentación previa, agendas inteligentes y seguimiento post-evento</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <span class="text-emerald-300 mt-1">✓</span>
+            <span><strong>Contenidos aplicados:</strong> casos reales de plantas en México, rutas logísticas y modelos fiscales/operativos</span>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Modal para ampliar imágenes -->
+    <div id="imageModal" class="fixed inset-0 bg-black/90 backdrop-blur-md z-[9999] hidden items-center justify-center p-4" onclick="closeImageModal()">
+      <button class="absolute top-4 right-4 text-white text-4xl hover:text-emerald-400 transition" onclick="closeImageModal()">
+        ✕
+      </button>
+      <img id="modalImage" src="" alt="Vista ampliada" class="max-w-full max-h-[90vh] object-contain rounded-lg shadow-2xl">
+    </div>
+
+    <!-- Bloque 6: Llamado a la acción -->
+    <section class="bg-gradient-to-r from-emerald-500/10 via-cyan-500/10 to-emerald-500/10 border-2 border-emerald-400/50 rounded-2xl p-8 animate-fade-in backdrop-blur-sm shadow-xl shadow-emerald-500/10">
+      <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+        <div class="flex-1">
+          <div class="flex items-center gap-3 mb-3">
+            <span class="text-4xl">🚀</span>
+            <h2 class="text-2xl md:text-3xl font-bold text-white">
+              Próximo paso para Nearshore Connection
+            </h2>
+          </div>
+          <p class="text-slate-300 text-base leading-relaxed max-w-2xl">
+            Utiliza este mapa competitivo para definir el posicionamiento de tus conferencias y agendas B2B, alineando sedes, sectores prioritarios y
+            propuesta de valor frente a los summits existentes en Norteamérica.
+          </p>
+        </div>
+        <div class="flex flex-col sm:flex-row gap-4">
+          <button class="px-8 py-4 rounded-xl bg-gradient-to-r from-emerald-500 to-cyan-500 text-slate-950 text-base font-bold hover:from-emerald-400 hover:to-cyan-400 transition-all transform hover:scale-105 shadow-lg shadow-emerald-500/50 whitespace-nowrap">
+            📋 Diseñar portafolio 2025-2026
+          </button>
+          <a href="https://notebooklm.google.com/notebook/32dc755a-3128-4c80-9826-5678ec0d4f3a" 
+             target="_blank" 
+             rel="noopener noreferrer"
+             class="px-8 py-4 rounded-xl bg-gradient-to-r from-purple-500 to-pink-50 space-y-4">
+      <p>Mapa Competitivo Nearshore Connection | Actualizado 2025-2026</p>
+      <p>Análisis estratégico para eventos de manufactura y nearshoring en Norteamérica</p>
+      <div class="flex items-center justify-center gap-2 mt-4">
+        <span class="text-purple-400">📚</span>
+        <a href="https://notebooklm.google.com/notebook/32dc755a-3128-4c80-9826-5678ec0d4f3a" 
+           target="_blank" 
+           rel="noopener noreferrer"
+           class="text-purple-400 hover:text-purple-300 underline transition">
+          Explorar análisis completo en NotebookLM
+        </a>
+      </div
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer informativo -->
+    <foSistema de Tabs
+    (function() {
+      const tabButtons = document.querySelectorAll('.tab-button');
+      const tabContents = document.querySelectorAll('.tab-content');
+
+      tabButtons.forEach(button => {
+        button.addEventListener('click', () => {
+          const tabName = button.getAttribute('data-tab');
+          
+          // Remover active de todos
+          tabButtons.forEach(btn => btn.classList.remove('active', 'text-emerald-400', 'border-b-2', 'border-emerald-400'));
+          tabContents.forEach(content => content.classList.add('hidden'));
+          
+          // Activar el seleccionado
+          button.classList.add('active', 'text-emerald-400', 'border-b-2', 'border-emerald-400');
+          document.getElementById('tab-' + tabName).classList.remove('hidden');
+        });
+      });
+      
+      // Activar el primer tab
+      if (tabButtons.length > 0) {
+        tabButtons[0].classList.add('text-emerald-400', 'border-b-2', 'border-emerald-400');
+      }
+    })();
+
+    // Modal de imágenes
+    function openImageModal(imageUrl) {
+      const modal = document.getElementById('imageModal');
+      const modalImage = document.getElementById('modalImage');
+      modalImage.src = imageUrl;
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeImageModal() {
+      const modal = document.getElementById('imageModal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    // Cerrar modal con ESC
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeImageModal();
+      }
+    });
+
+    // oter class="text-center text-slate-500 text-sm pt-8 border-t border-slate-800">
+      <p>Mapa Competitivo Nearshore Connection | Actualizado 2025-2026</p>
+      <p class="mt-2">Análisis estratégico para eventos de manufactura y nearshoring en Norteamérica</p>
+    </footer>
+
+  </main>
+
+  <script>
+    // Animación de entrada para elementos cuando se hacen visibles
+    (function() {
+      const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -100px 0px'
+      };
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.style.opacity = '1';
+            entry.target.style.transform = 'translateY(0)';
+          }
+        });
+      }, observerOptions);
+
+      // Observar todas las secciones
+      document.querySelectorAll('section').forEach((section, index) => {
+        section.style.opacity = '0';
+        section.style.transform = 'translateY(30px)';
+        section.style.transition = `all 0.6s ease-out ${index * 0.1}s`;
+        observer.observe(section);
+      });
+
+      // Función para el botón de acción
+      const actionButton = document.querySelector('button');
+      if (actionButton) {
+        actionButton.addEventListener('click', () => {
+          alert('✅ Funcionalidad en desarrollo\n\n📋 Próximamente podrás:\n• Exportar este análisis en PDF\n• Generar reportes personalizados\n• Crear planes de acción estratégicos');
+        });
+      }
+    })();
+  </script>
+</body>
+</html>
