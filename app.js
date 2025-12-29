@@ -482,9 +482,12 @@ function renderFullHTML(container, fullHtmlCode) {
     // Ensure the HTML has proper structure
     let iframeContent = fullHtmlCode;
     
-    // If the HTML doesn't have DOCTYPE, html, or body tags, wrap it properly
-    // Check for DOCTYPE and html opening tag at the beginning
-    if (!/^\s*<!DOCTYPE/i.test(iframeContent) && !/^\s*<html/i.test(iframeContent)) {
+    // If the HTML doesn't have DOCTYPE or html opening tag, wrap it properly
+    // This handles HTML fragments that need a complete document structure
+    const hasDoctype = /^\s*<!DOCTYPE/i.test(iframeContent);
+    const hasHtmlTag = /<html/i.test(iframeContent);
+    
+    if (!hasDoctype || !hasHtmlTag) {
         iframeContent = `<!DOCTYPE html>
 <html lang="es">
 <head>
