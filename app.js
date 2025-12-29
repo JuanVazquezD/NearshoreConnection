@@ -494,6 +494,11 @@ function renderFullHTML(container, fullHtmlCode) {
     
     // If the HTML doesn't have DOCTYPE, html, head, or body tags, wrap it
     if (!iframeContent.match(/<!DOCTYPE/i)) {
+        // NOTE: The following HTML extraction and reorganization is NOT for security sanitization.
+        // Security is provided by the iframe sandbox (no allow-same-origin).
+        // This code simply reorganizes user-provided HTML to ensure proper structure.
+        // Any malicious code will be safely contained within the sandboxed iframe.
+        
         // Extract any style and script tags to put them in proper locations
         const styles = [];
         const headScripts = [];
