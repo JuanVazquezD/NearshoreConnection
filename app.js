@@ -198,8 +198,8 @@ function handlePreview() {
     // Clear previous preview
     previewFrame.innerHTML = '';
     
-    // Render the full HTML
-    renderFullHTML(previewFrame, fullHtmlCode);
+    // Render the full HTML in an isolated iframe
+    renderFullHTMLInIframe(previewFrame, fullHtmlCode);
     
     previewContainer.style.display = 'block';
 }
@@ -425,46 +425,93 @@ function renderHTMLResource(containerId, resource) {
     
     // Check if it's the new format (fullHtml) or old format (separate html/css/js)
     if (resource.fullHtml) {
-        // New format: full HTML in one field
-        renderFullHTML(container, resource.fullHtml);
+        // New format: full HTML in one field - render in iframe for isolation
+        renderFullHTMLInIframe(container, resource.fullHtml);
     } else {
         // Old format: separate fields (for backward compatibility)
-        const wrapper = document.createElement('div');
-        wrapper.className = 'html-resource-wrapper';
-        
-        // Add CSS
-        if (resource.css) {
-            const style = document.createElement('style');
-            style.textContent = resource.css;
-            wrapper.appendChild(style);
-        }
-        
-        // Add HTML
-        if (resource.html) {
-            const htmlContainer = document.createElement('div');
-            htmlContainer.innerHTML = resource.html;
-            wrapper.appendChild(htmlContainer);
-        }
-        
-        container.appendChild(wrapper);
-        
-        // Execute JavaScript
-        if (resource.js) {
-            try {
-                const scriptFunc = new Function('container', resource.js);
-                scriptFunc.call(wrapper, wrapper);
-            } catch (error) {
-                console.error('Error ejecutando JavaScript del recurso:', error);
-                const errorDiv = document.createElement('div');
-                errorDiv.style.color = '#dc3545';
-                errorDiv.style.padding = '10px';
-                errorDiv.style.background = '#f8d7da';
-                errorDiv.style.borderRadius = '4px';
-                errorDiv.textContent = 'Error en JavaScript: ' + error.message;
-                container.appendChild(errorDiv);
-            }
-        }
+        // Also use iframe for isolation
+        const combinedHtml = `
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    ${resource.css ? `<style>${resource.css}</style>` : ''}
+</head>
+<body>
+    ${resource.html || ''}
+    ${resource.js ? `<script>${resource.js}</script>` : ''}
+</body>
+</html>`;
+        renderFullHTMLInIframe(container, combinedHtml);
     }
+}
+
+function renderFullHTMLInIframe(container, fullHtmlCode) {
+    // Create an iframe to isolate the HTML content
+    const iframe = document.createElement('iframe');
+    
+    // Set sandbox attributes for security while allowing necessary features
+    // - allow-scripts: Allow JavaScript execution
+    // - allow-same-origin: Allow access to localStorage and other same-origin features (needed for some visualizations)
+    // Note: We explicitly DO NOT include allow-top-navigation to prevent the iframe from navigating the parent page
+    iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-forms allow-modals');
+    
+    // Style the iframe to be seamless
+    iframe.style.width = '100%';
+    iframe.style.border = 'none';
+    iframe.style.minHeight = '400px';
+    iframe.style.backgroundColor = 'white';
+    
+    // Add the iframe to the container
+    container.appendChild(iframe);
+    
+    // Write the HTML content to the iframe
+    const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+    iframeDoc.open();
+    iframeDoc.write(fullHtmlCode);
+    iframeDoc.close();
+    
+    // Auto-resize iframe based on content height
+    iframe.onload = function() {
+        try {
+            // Wait a bit for content to render
+            setTimeout(() => {
+                const iframeBody = iframe.contentDocument?.body;
+                const iframeHtml = iframe.contentDocument?.documentElement;
+                if (iframeBody && iframeHtml) {
+                    const height = Math.max(
+                        iframeBody.scrollHeight,
+                        iframeBody.offsetHeight,
+                        iframeHtml.clientHeight,
+                        iframeHtml.scrollHeight,
+                        iframeHtml.offsetHeight
+                    );
+                    iframe.style.height = (height + 20) + 'px'; // Add some padding
+                }
+            }, 500);
+            
+            // Re-check after a longer delay for dynamic content
+            setTimeout(() => {
+                const iframeBody = iframe.contentDocument?.body;
+                const iframeHtml = iframe.contentDocument?.documentElement;
+                if (iframeBody && iframeHtml) {
+                    const height = Math.max(
+                        iframeBody.scrollHeight,
+                        iframeBody.offsetHeight,
+                        iframeHtml.clientHeight,
+                        iframeHtml.scrollHeight,
+                        iframeHtml.offsetHeight
+                    );
+                    iframe.style.height = (height + 20) + 'px';
+                }
+            }, 2000);
+        } catch (e) {
+            // If we can't access iframe content (shouldn't happen with same origin),
+            // just use a default height
+            console.warn('Could not auto-resize iframe:', e);
+        }
+    };
 }
 
 function renderFullHTML(container, fullHtmlCode) {
