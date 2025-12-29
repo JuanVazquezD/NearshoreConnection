@@ -447,6 +447,10 @@ function renderHTMLResource(containerId, resource) {
     }
 }
 
+// Constants for iframe resizing
+const IFRAME_RESIZE_DELAY_INITIAL = 500; // ms - initial delay for content render
+const IFRAME_RESIZE_DELAY_DYNAMIC = 2000; // ms - delay for dynamic content (charts, etc.)
+
 // Helper function to resize iframe based on content
 function resizeIframe(iframe) {
     try {
@@ -463,6 +467,7 @@ function resizeIframe(iframe) {
             iframe.style.height = (height + 20) + 'px'; // Add some padding
         }
     } catch (e) {
+        // May fail due to cross-origin restrictions in some edge cases
         console.warn('Could not auto-resize iframe:', e);
     }
 }
@@ -474,7 +479,10 @@ function renderFullHTMLInIframe(container, fullHtmlCode) {
     // Set sandbox attributes for security while allowing necessary features
     // - allow-scripts: Allow JavaScript execution (required for visualizations like Chart.js, Plotly)
     // - allow-same-origin: Required for Chart.js/Plotly to work correctly and access their own APIs
-    //   Note: This is safe because content is still isolated in iframe and cannot navigate parent
+    //   Note: This is safe because content is still isolated in iframe and cannot:
+    //   * Navigate the parent page (without allow-top-navigation)
+    //   * Modify the parent DOM
+    //   * Use document.write() to overwrite the parent page
     // - allow-forms: Allow interactive forms in resources
     // - allow-modals: Allow alerts/confirms for user interaction
     // IMPORTANT: We explicitly DO NOT include allow-top-navigation to prevent iframe from navigating parent page
@@ -489,19 +497,25 @@ function renderFullHTMLInIframe(container, fullHtmlCode) {
     // Add the iframe to the container
     container.appendChild(iframe);
     
-    // Write the HTML content to the iframe
-    const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-    iframeDoc.open();
-    iframeDoc.write(fullHtmlCode);
-    iframeDoc.close();
+    // Use srcdoc attribute for safer HTML injection (preferred over document.write)
+    // Falls back to document.write for older browsers
+    if ('srcdoc' in iframe) {
+        iframe.srcdoc = fullHtmlCode;
+    } else {
+        // Fallback for older browsers
+        const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+        iframeDoc.open();
+        iframeDoc.write(fullHtmlCode);
+        iframeDoc.close();
+    }
     
     // Auto-resize iframe based on content height
     iframe.onload = () => {
         // Wait for content to render
-        setTimeout(() => resizeIframe(iframe), 500);
+        setTimeout(() => resizeIframe(iframe), IFRAME_RESIZE_DELAY_INITIAL);
         
         // Re-check after a longer delay for dynamic content (charts, etc.)
-        setTimeout(() => resizeIframe(iframe), 2000);
+        setTimeout(() => resizeIframe(iframe), IFRAME_RESIZE_DELAY_DYNAMIC);
     };
 }
 
