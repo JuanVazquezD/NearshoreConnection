@@ -34,8 +34,13 @@ function renderFullHTMLInIframe(container, fullHtmlCode) {
 
 Los iframes utilizan los siguientes permisos de sandbox:
 
-- ✅ `allow-scripts`: Permite ejecución de JavaScript (necesario para visualizaciones)
-- ✅ `allow-same-origin`: Permite acceso a APIs del navegador (localStorage, etc.)
+- ✅ `allow-scripts`: Permite ejecución de JavaScript (necesario para visualizaciones como Chart.js y Plotly)
+- ✅ `allow-same-origin`: Permite que las librerías accedan a sus propias APIs correctamente
+  - **Nota de Seguridad**: Aunque esto permite acceso al mismo origen, el iframe sigue aislado y NO puede:
+    - Navegar la página padre (sin `allow-top-navigation`)
+    - Modificar el DOM del documento principal
+    - Usar `document.write()` para sobrescribir la página principal
+  - Es necesario para que Chart.js y Plotly funcionen correctamente
 - ✅ `allow-forms`: Permite uso de formularios
 - ✅ `allow-modals`: Permite alerts y confirmaciones
 - ❌ `allow-top-navigation`: **NO INCLUIDO** - Previene navegación de la página padre

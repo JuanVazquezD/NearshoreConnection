@@ -447,14 +447,37 @@ function renderHTMLResource(containerId, resource) {
     }
 }
 
+// Helper function to resize iframe based on content
+function resizeIframe(iframe) {
+    try {
+        const iframeBody = iframe.contentDocument?.body;
+        const iframeHtml = iframe.contentDocument?.documentElement;
+        if (iframeBody && iframeHtml) {
+            const height = Math.max(
+                iframeBody.scrollHeight,
+                iframeBody.offsetHeight,
+                iframeHtml.clientHeight,
+                iframeHtml.scrollHeight,
+                iframeHtml.offsetHeight
+            );
+            iframe.style.height = (height + 20) + 'px'; // Add some padding
+        }
+    } catch (e) {
+        console.warn('Could not auto-resize iframe:', e);
+    }
+}
+
 function renderFullHTMLInIframe(container, fullHtmlCode) {
     // Create an iframe to isolate the HTML content
     const iframe = document.createElement('iframe');
     
     // Set sandbox attributes for security while allowing necessary features
-    // - allow-scripts: Allow JavaScript execution
-    // - allow-same-origin: Allow access to localStorage and other same-origin features (needed for some visualizations)
-    // Note: We explicitly DO NOT include allow-top-navigation to prevent the iframe from navigating the parent page
+    // - allow-scripts: Allow JavaScript execution (required for visualizations like Chart.js, Plotly)
+    // - allow-same-origin: Required for Chart.js/Plotly to work correctly and access their own APIs
+    //   Note: This is safe because content is still isolated in iframe and cannot navigate parent
+    // - allow-forms: Allow interactive forms in resources
+    // - allow-modals: Allow alerts/confirms for user interaction
+    // IMPORTANT: We explicitly DO NOT include allow-top-navigation to prevent iframe from navigating parent page
     iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-forms allow-modals');
     
     // Style the iframe to be seamless
@@ -473,44 +496,12 @@ function renderFullHTMLInIframe(container, fullHtmlCode) {
     iframeDoc.close();
     
     // Auto-resize iframe based on content height
-    iframe.onload = function() {
-        try {
-            // Wait a bit for content to render
-            setTimeout(() => {
-                const iframeBody = iframe.contentDocument?.body;
-                const iframeHtml = iframe.contentDocument?.documentElement;
-                if (iframeBody && iframeHtml) {
-                    const height = Math.max(
-                        iframeBody.scrollHeight,
-                        iframeBody.offsetHeight,
-                        iframeHtml.clientHeight,
-                        iframeHtml.scrollHeight,
-                        iframeHtml.offsetHeight
-                    );
-                    iframe.style.height = (height + 20) + 'px'; // Add some padding
-                }
-            }, 500);
-            
-            // Re-check after a longer delay for dynamic content
-            setTimeout(() => {
-                const iframeBody = iframe.contentDocument?.body;
-                const iframeHtml = iframe.contentDocument?.documentElement;
-                if (iframeBody && iframeHtml) {
-                    const height = Math.max(
-                        iframeBody.scrollHeight,
-                        iframeBody.offsetHeight,
-                        iframeHtml.clientHeight,
-                        iframeHtml.scrollHeight,
-                        iframeHtml.offsetHeight
-                    );
-                    iframe.style.height = (height + 20) + 'px';
-                }
-            }, 2000);
-        } catch (e) {
-            // If we can't access iframe content (shouldn't happen with same origin),
-            // just use a default height
-            console.warn('Could not auto-resize iframe:', e);
-        }
+    iframe.onload = () => {
+        // Wait for content to render
+        setTimeout(() => resizeIframe(iframe), 500);
+        
+        // Re-check after a longer delay for dynamic content (charts, etc.)
+        setTimeout(() => resizeIframe(iframe), 2000);
     };
 }
 
