@@ -555,7 +555,7 @@ function renderFullHTML(container, fullHtmlCode) {
     
     // Auto-resize iframe based on content
     // Generate a unique ID for this iframe to validate messages
-    const iframeId = 'iframe-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+    const iframeId = 'iframe-' + Date.now() + '-' + Math.random().toString(36).substring(2, 11);
     iframe.dataset.iframeId = iframeId;
     
     // Set up a message listener for height updates from the iframe
@@ -571,10 +571,12 @@ function renderFullHTML(container, fullHtmlCode) {
     window.addEventListener('message', resizeHandler);
     
     // Inject resize script into iframe content
+    // Escape the iframeId to prevent script injection
+    const escapedIframeId = iframeId.replace(/['"\\]/g, '\\$&');
     const resizeScript = `
     <script>
         (function() {
-            const iframeId = '${iframeId}';
+            const iframeId = '${escapedIframeId}';
             let lastHeight = 0;
             
             // Send height updates to parent
@@ -622,7 +624,24 @@ function renderFullHTML(container, fullHtmlCode) {
     </script>
     `;
     
-    iframe.srcdoc = iframeContent.replace('</body>', resizeScript + '</body>');
+    // Inject the resize script before closing body tag
+    // Use a more robust approach that handles missing or multiple body tags
+    const bodyEndIndex = iframeContent.lastIndexOf('</body>');
+    if (bodyEndIndex !== -1) {
+        iframe.srcdoc = iframeContent.substring(0, bodyEndIndex) + 
+                        resizeScript + 
+                        iframeContent.substring(bodyEndIndex);
+    } else {
+        // If no body tag, append before </html> or at the end
+        const htmlEndIndex = iframeContent.lastIndexOf('</html>');
+        if (htmlEndIndex !== -1) {
+            iframe.srcdoc = iframeContent.substring(0, htmlEndIndex) + 
+                            resizeScript + 
+                            iframeContent.substring(htmlEndIndex);
+        } else {
+            iframe.srcdoc = iframeContent + resizeScript;
+        }
+    }
     
     // Append iframe to container
     container.appendChild(iframe);
