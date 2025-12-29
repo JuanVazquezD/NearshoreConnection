@@ -483,7 +483,8 @@ function renderFullHTML(container, fullHtmlCode) {
     let iframeContent = fullHtmlCode;
     
     // If the HTML doesn't have DOCTYPE, html, or body tags, wrap it properly
-    if (!iframeContent.includes('<!DOCTYPE') && !iframeContent.includes('<html')) {
+    // Check for DOCTYPE and html opening tag at the beginning
+    if (!/^\s*<!DOCTYPE/i.test(iframeContent) && !/^\s*<html/i.test(iframeContent)) {
         iframeContent = `<!DOCTYPE html>
 <html lang="es">
 <head>
@@ -506,18 +507,8 @@ ${iframeContent}
     // Set the iframe content using srcdoc
     iframe.setAttribute('srcdoc', iframeContent);
     
-    // Set initial height
-    iframe.style.width = '100%';
-    iframe.style.border = 'none';
-    iframe.style.minHeight = '400px';
-    
-    // Add load event to auto-resize iframe
-    // Note: Auto-resize won't work due to cross-origin restrictions from sandbox,
-    // but we set a reasonable default height
+    // Add load event for logging
     iframe.addEventListener('load', function() {
-        // Set a larger default height for sandboxed content
-        iframe.style.height = '600px';
-        
         console.log('HTML resource loaded in sandboxed iframe');
     });
     
