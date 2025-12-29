@@ -472,22 +472,21 @@ function renderFullHTML(container, fullHtmlCode) {
     const iframe = document.createElement('iframe');
     iframe.className = 'html-resource-iframe';
     
-    // Sandbox attributes to prevent:
+    // Sandbox attributes to prevent malicious actions:
     // - allow-scripts: Allow scripts to run (needed for interactive content)
-    // - allow-same-origin: Allow content to be treated as being from the same origin (needed for styling)
     // - allow-popups: Allow popups if needed
     // - allow-forms: Allow form submission
-    // Note: We explicitly do NOT include 'allow-top-navigation' to prevent navigation of parent
-    iframe.sandbox = 'allow-scripts allow-same-origin allow-popups allow-forms allow-modals';
+    // IMPORTANT: We do NOT include 'allow-same-origin' because when combined with
+    // 'allow-scripts', it would allow the iframe to access parent.window and navigate it.
+    // By omitting 'allow-same-origin', the iframe gets a unique origin and cannot access
+    // the parent document, preventing XSS and navigation attacks.
+    iframe.sandbox = 'allow-scripts allow-popups allow-forms allow-modals';
     
-    // Set a reasonable default height, will be adjusted by content
+    // Set a reasonable default height
     iframe.style.width = '100%';
     iframe.style.border = '1px solid #ddd';
     iframe.style.borderRadius = '4px';
     iframe.style.minHeight = '400px';
-    
-    // Append iframe to container first
-    container.appendChild(iframe);
     
     // Prepare the HTML document for the iframe
     // Ensure we have a complete HTML document
@@ -498,7 +497,6 @@ function renderFullHTML(container, fullHtmlCode) {
         // Extract any style and script tags to put them in proper locations
         const styles = [];
         const headScripts = [];
-        const bodyContent = [];
         
         // Extract styles
         const styleRegex = /<style[^>]*>([\s\S]*?)<\/style>/gi;
@@ -551,42 +549,60 @@ function renderFullHTML(container, fullHtmlCode) {
         `;
     }
     
-    // Write content to iframe
-    try {
-        const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-        iframeDoc.open();
-        iframeDoc.write(iframeContent);
-        iframeDoc.close();
-        
-        // Auto-resize iframe based on content
-        iframe.onload = function() {
+    // Use srcdoc attribute for better security
+    // srcdoc creates a unique origin for the iframe, preventing access to parent
+    iframe.srcdoc = iframeContent;
+    
+    // Auto-resize iframe based on content
+    // Set up a message listener for height updates from the iframe
+    const resizeHandler = function(event) {
+        // Verify the message is from our iframe
+        if (event.source === iframe.contentWindow && event.data && event.data.type === 'resize') {
+            iframe.style.height = (event.data.height + 40) + 'px';
+        }
+    };
+    window.addEventListener('message', resizeHandler);
+    
+    // Inject resize script into iframe content
+    const resizeScript = `
+    <script>
+        // Send height updates to parent
+        function updateHeight() {
+            const height = Math.max(
+                document.body.scrollHeight,
+                document.body.offsetHeight,
+                document.documentElement.clientHeight,
+                document.documentElement.scrollHeight,
+                document.documentElement.offsetHeight
+            );
             try {
-                const iframeBody = iframe.contentDocument.body;
-                const iframeHtml = iframe.contentDocument.documentElement;
-                const height = Math.max(
-                    iframeBody.scrollHeight,
-                    iframeBody.offsetHeight,
-                    iframeHtml.clientHeight,
-                    iframeHtml.scrollHeight,
-                    iframeHtml.offsetHeight
-                );
-                iframe.style.height = (height + 40) + 'px';
-            } catch (e) {
-                // If we can't access iframe content (cross-origin), use default height
-                console.warn('Could not auto-resize iframe:', e);
+                window.parent.postMessage({ type: 'resize', height: height }, '*');
+            } catch(e) {
+                // Ignore if postMessage is blocked
             }
-        };
-    } catch (error) {
-        console.error('Error rendering HTML in iframe:', error);
-        const errorDiv = document.createElement('div');
-        errorDiv.style.color = '#dc3545';
-        errorDiv.style.padding = '10px';
-        errorDiv.style.background = '#f8d7da';
-        errorDiv.style.borderRadius = '4px';
-        errorDiv.style.marginTop = '10px';
-        errorDiv.innerHTML = `<strong>Error al renderizar HTML:</strong><br>${error.message}`;
-        container.appendChild(errorDiv);
-    }
+        }
+        
+        // Update height when loaded and when content changes
+        window.addEventListener('load', updateHeight);
+        window.addEventListener('resize', updateHeight);
+        
+        // Also check periodically for dynamic content
+        setInterval(updateHeight, 1000);
+        
+        // Initial update
+        setTimeout(updateHeight, 100);
+    </script>
+    `;
+    
+    iframe.srcdoc = iframeContent.replace('</body>', resizeScript + '</body>');
+    
+    // Append iframe to container
+    container.appendChild(iframe);
+    
+    // Cleanup listener when iframe is removed
+    iframe.addEventListener('remove', () => {
+        window.removeEventListener('message', resizeHandler);
+    });
 }
 
 
