@@ -473,10 +473,11 @@ function renderFullHTML(container, fullHtmlCode) {
     iframe.className = 'html-resource-iframe';
     
     // Sandbox the iframe to prevent access to parent document
-    // allow-scripts: permits scripts to run
-    // allow-same-origin: allows content to access its own origin (needed for some features)
-    // Note: We intentionally do NOT include allow-top-navigation to prevent navigation changes
-    iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-forms allow-modals');
+    // allow-scripts: permits scripts to run within the iframe
+    // Note: We intentionally do NOT include allow-same-origin to prevent access to parent
+    // Note: We do NOT include allow-top-navigation to prevent navigation changes
+    // This creates a unique origin for the iframe content, fully isolating it
+    iframe.setAttribute('sandbox', 'allow-scripts allow-forms allow-modals allow-popups');
     
     // Ensure the HTML has proper structure
     let iframeContent = fullHtmlCode;
@@ -511,34 +512,13 @@ ${iframeContent}
     iframe.style.minHeight = '400px';
     
     // Add load event to auto-resize iframe
+    // Note: Auto-resize won't work due to cross-origin restrictions from sandbox,
+    // but we set a reasonable default height
     iframe.addEventListener('load', function() {
-        try {
-            // Auto-resize iframe to content height
-            const resizeIframe = () => {
-                try {
-                    if (iframe.contentWindow && iframe.contentWindow.document && iframe.contentWindow.document.body) {
-                        const height = iframe.contentWindow.document.body.scrollHeight;
-                        iframe.style.height = Math.max(400, height + 20) + 'px';
-                    }
-                } catch (e) {
-                    // Cross-origin errors are expected and can be ignored
-                    console.log('Iframe resize restricted by sandbox:', e.message);
-                }
-            };
-            
-            // Initial resize
-            setTimeout(resizeIframe, 100);
-            
-            // Resize on window resize
-            window.addEventListener('resize', resizeIframe);
-            
-            // Watch for content changes (for dynamic content)
-            setTimeout(resizeIframe, 500);
-            setTimeout(resizeIframe, 1000);
-            setTimeout(resizeIframe, 2000);
-        } catch (error) {
-            console.log('Iframe auto-resize not available:', error.message);
-        }
+        // Set a larger default height for sandboxed content
+        iframe.style.height = '600px';
+        
+        console.log('HTML resource loaded in sandboxed iframe');
     });
     
     container.appendChild(iframe);
