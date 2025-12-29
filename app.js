@@ -554,10 +554,17 @@ function renderFullHTML(container, fullHtmlCode) {
     iframe.srcdoc = iframeContent;
     
     // Auto-resize iframe based on content
+    // Generate a unique ID for this iframe to validate messages
+    const iframeId = 'iframe-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+    iframe.dataset.iframeId = iframeId;
+    
     // Set up a message listener for height updates from the iframe
     const resizeHandler = function(event) {
-        // Verify the message is from our iframe
-        if (event.source === iframe.contentWindow && event.data && event.data.type === 'resize') {
+        // Verify the message is from our iframe and has the correct ID
+        if (event.source === iframe.contentWindow && 
+            event.data && 
+            event.data.type === 'resize' && 
+            event.data.iframeId === iframeId) {
             iframe.style.height = (event.data.height + 40) + 'px';
         }
     };
@@ -566,31 +573,52 @@ function renderFullHTML(container, fullHtmlCode) {
     // Inject resize script into iframe content
     const resizeScript = `
     <script>
-        // Send height updates to parent
-        function updateHeight() {
-            const height = Math.max(
-                document.body.scrollHeight,
-                document.body.offsetHeight,
-                document.documentElement.clientHeight,
-                document.documentElement.scrollHeight,
-                document.documentElement.offsetHeight
-            );
-            try {
-                window.parent.postMessage({ type: 'resize', height: height }, '*');
-            } catch(e) {
-                // Ignore if postMessage is blocked
+        (function() {
+            const iframeId = '${iframeId}';
+            let lastHeight = 0;
+            
+            // Send height updates to parent
+            function updateHeight() {
+                const height = Math.max(
+                    document.body.scrollHeight,
+                    document.body.offsetHeight,
+                    document.documentElement.clientHeight,
+                    document.documentElement.scrollHeight,
+                    document.documentElement.offsetHeight
+                );
+                
+                // Only send update if height changed (optimization)
+                if (height !== lastHeight) {
+                    lastHeight = height;
+                    try {
+                        window.parent.postMessage({ 
+                            type: 'resize', 
+                            height: height,
+                            iframeId: iframeId 
+                        }, '*');
+                    } catch(e) {
+                        // Ignore if postMessage is blocked
+                    }
+                }
             }
-        }
-        
-        // Update height when loaded and when content changes
-        window.addEventListener('load', updateHeight);
-        window.addEventListener('resize', updateHeight);
-        
-        // Also check periodically for dynamic content
-        setInterval(updateHeight, 1000);
-        
-        // Initial update
-        setTimeout(updateHeight, 100);
+            
+            // Update height when loaded and when content changes
+            window.addEventListener('load', updateHeight);
+            window.addEventListener('resize', updateHeight);
+            
+            // Use ResizeObserver if available for better performance
+            if (typeof ResizeObserver !== 'undefined') {
+                const resizeObserver = new ResizeObserver(updateHeight);
+                resizeObserver.observe(document.body);
+            } else {
+                // Fallback to interval for older browsers (less frequent)
+                setInterval(updateHeight, 2000);
+            }
+            
+            // Initial update
+            setTimeout(updateHeight, 100);
+            setTimeout(updateHeight, 500);
+        })();
     </script>
     `;
     
@@ -599,10 +627,27 @@ function renderFullHTML(container, fullHtmlCode) {
     // Append iframe to container
     container.appendChild(iframe);
     
-    // Cleanup listener when iframe is removed
-    iframe.addEventListener('remove', () => {
+    // Store cleanup function on iframe element
+    iframe._cleanupResizeHandler = function() {
         window.removeEventListener('message', resizeHandler);
+    };
+    
+    // Set up a MutationObserver to detect when iframe is removed
+    const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            mutation.removedNodes.forEach(function(node) {
+                if (node === iframe && iframe._cleanupResizeHandler) {
+                    iframe._cleanupResizeHandler();
+                    observer.disconnect();
+                }
+            });
+        });
     });
+    
+    // Observe the container for child removal
+    if (container.parentNode) {
+        observer.observe(container.parentNode, { childList: true, subtree: true });
+    }
 }
 
 
