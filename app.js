@@ -462,6 +462,8 @@ function renderFullHTML(container, fullHtmlCode) {
     container.innerHTML = '';
     
     // Ensure the HTML has proper document structure
+    // Note: This restructuring is for proper HTML formatting, NOT for security.
+    // Security is provided by the sandboxed iframe created at the end of this function.
     let completeHtml = fullHtmlCode.trim();
     
     // If the HTML doesn't have DOCTYPE, html, head, or body tags, wrap it
@@ -472,9 +474,9 @@ function renderFullHTML(container, fullHtmlCode) {
         
         if (!hasHtmlTag || !hasHeadTag || !hasBodyTag) {
             // Extract style and script tags to put in proper locations
+            // These regex patterns are for restructuring only, not security filtering
             const styles = [];
             const headScripts = [];
-            const bodyContent = [];
             
             const styleRegex = /<style[^>]*>([\s\S]*?)<\/style>/gi;
             let match;
@@ -487,7 +489,7 @@ function renderFullHTML(container, fullHtmlCode) {
                 headScripts.push(match[0]);
             }
             
-            // Remove style and script tags from original HTML
+            // Remove style and script tags from original HTML to reorganize them
             let bodyHtml = completeHtml;
             bodyHtml = bodyHtml.replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '');
             bodyHtml = bodyHtml.replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '');
