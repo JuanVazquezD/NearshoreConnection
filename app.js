@@ -530,9 +530,10 @@ function createIsolatedIframe(htmlContent) {
     iframe.style.minHeight = '300px';
     
     // Set sandbox attribute to isolate the content
-    // allow-scripts: permits scripts to run
-    // allow-same-origin: allows content to access its own origin (needed for some features)
-    iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin');
+    // allow-scripts: permits scripts to run within the iframe
+    // Note: We intentionally do NOT use 'allow-same-origin' to maintain strong isolation
+    // and prevent iframe content from accessing the parent document
+    iframe.setAttribute('sandbox', 'allow-scripts');
     
     // Use srcdoc if available (modern browsers)
     if ('srcdoc' in iframe) {
@@ -547,7 +548,6 @@ function createIsolatedIframe(htmlContent) {
         try {
             const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
             if (iframeDoc && iframeDoc.body) {
-                // Set initial height
                 const resizeIframe = () => {
                     const height = iframeDoc.documentElement.scrollHeight || iframeDoc.body.scrollHeight;
                     if (height > 0) {
@@ -555,27 +555,38 @@ function createIsolatedIframe(htmlContent) {
                     }
                 };
                 
-                // Resize on load
+                // Initial resize
                 resizeIframe();
                 
-                // Resize after a delay to account for dynamic content
-                setTimeout(resizeIframe, 500);
-                setTimeout(resizeIframe, 1000);
-                setTimeout(resizeIframe, 2000);
-                
-                // Watch for changes in content
-                if (window.MutationObserver) {
-                    const observer = new MutationObserver(resizeIframe);
-                    observer.observe(iframeDoc.body, {
+                // Use ResizeObserver if available for better performance
+                if (window.ResizeObserver) {
+                    const resizeObserver = new ResizeObserver(resizeIframe);
+                    resizeObserver.observe(iframeDoc.body);
+                    
+                    // Store observer for cleanup when iframe is removed
+                    iframe._resizeObserver = resizeObserver;
+                } else {
+                    // Fallback: Use MutationObserver for older browsers
+                    const mutationObserver = new MutationObserver(resizeIframe);
+                    mutationObserver.observe(iframeDoc.body, {
                         attributes: true,
                         childList: true,
                         subtree: true
                     });
+                    
+                    // Store observer for cleanup
+                    iframe._mutationObserver = mutationObserver;
+                    
+                    // Also do periodic checks for dynamic content
+                    setTimeout(resizeIframe, 500);
+                    setTimeout(resizeIframe, 1500);
                 }
             }
         } catch (e) {
             // Cross-origin or security error - use default height
             console.log('Unable to auto-resize iframe:', e.message);
+            // Set a reasonable default height
+            iframe.style.height = '400px';
         }
     };
     
