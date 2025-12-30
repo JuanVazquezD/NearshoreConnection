@@ -544,6 +544,9 @@ function createIsolatedIframe(htmlContent) {
     }
     
     // Auto-resize iframe based on content
+    // Note: Due to sandbox restrictions (no allow-same-origin), accessing contentDocument
+    // will fail with a security exception, which is the intended security behavior.
+    // The iframe will use the default/minimum height specified in CSS.
     iframe.onload = function() {
         try {
             const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
@@ -583,10 +586,9 @@ function createIsolatedIframe(htmlContent) {
                 }
             }
         } catch (e) {
-            // Cross-origin or security error - use default height
-            console.log('Unable to auto-resize iframe:', e.message);
-            // Set a reasonable default height
-            iframe.style.height = '400px';
+            // Expected: Sandboxed iframes without 'allow-same-origin' cannot be accessed
+            // This is the correct security behavior - iframe uses default height from CSS
+            // Users can scroll within the iframe if content exceeds the default height
         }
     };
     
