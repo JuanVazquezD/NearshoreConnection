@@ -1,15 +1,67 @@
-// Nearshore Connection - Gestión de Temas y Recursos
+// Nearshore Connection - Admin Panel
 // Almacenamiento de datos
 let themes = [];
 let currentThemeId = null;
 let currentSubtopicId = null;
+let currentSpeakerId = null;
+const ADMIN_PASSWORD = 'admin123'; // Simple password for basic protection
 
-// Cargar datos del localStorage al iniciar
+// Check authentication on page load
 document.addEventListener('DOMContentLoaded', () => {
-    loadFromLocalStorage();
+    checkAuthentication();
+});
+
+// Authentication functions
+function checkAuthentication() {
+    const isAuthenticated = sessionStorage.getItem('adminAuthenticated') === 'true';
+    
+    if (isAuthenticated) {
+        showAdminContent();
+    } else {
+        showLoginModal();
+    }
+}
+
+function showLoginModal() {
+    document.getElementById('loginModal').style.display = 'block';
+    document.getElementById('adminContent').style.display = 'none';
+    
+    // Setup login form (only once)
+    const loginForm = document.getElementById('loginForm');
+    if (!loginForm.dataset.listenerAdded) {
+        loginForm.addEventListener('submit', handleLogin);
+        loginForm.dataset.listenerAdded = 'true';
+    }
+}
+
+function handleLogin(e) {
+    e.preventDefault();
+    const password = document.getElementById('adminPassword').value;
+    
+    if (password === ADMIN_PASSWORD) {
+        sessionStorage.setItem('adminAuthenticated', 'true');
+        document.getElementById('loginModal').style.display = 'none';
+        showAdminContent();
+    } else {
+        alert('❌ Contraseña incorrecta');
+        document.getElementById('adminPassword').value = '';
+    }
+}
+
+async function showAdminContent() {
+    document.getElementById('adminContent').style.display = 'block';
+    
+    // Load data from JSON first, fallback to localStorage
+    themes = await DataStore.loadFromJSON();
+    
     renderThemes();
     initializeEventListeners();
-});
+}
+
+function logout() {
+    sessionStorage.removeItem('adminAuthenticated');
+    location.reload();
+}
 
 // Inicializar event listeners
 function initializeEventListeners() {
@@ -17,12 +69,39 @@ function initializeEventListeners() {
     document.getElementById('addThemeBtn').addEventListener('click', () => {
         openThemeModal();
     });
+    
+    // Export/Import buttons
+    document.getElementById('exportBtn').addEventListener('click', () => {
+        DataStore.exportToJSON(themes);
+    });
+    
+    document.getElementById('importBtn').addEventListener('click', () => {
+        document.getElementById('importFile').click();
+    });
+    
+    document.getElementById('importFile').addEventListener('change', async (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            try {
+                themes = await DataStore.importFromFile(file);
+                DataStore.saveToLocalStorage(themes);
+                renderThemes();
+                alert('✅ Datos importados correctamente');
+            } catch (error) {
+                alert('❌ Error al importar: ' + error.message);
+            }
+        }
+    });
+    
+    // Logout button
+    document.getElementById('logoutBtn').addEventListener('click', logout);
 
     // Forms
     document.getElementById('themeForm').addEventListener('submit', handleThemeSubmit);
     document.getElementById('subtopicForm').addEventListener('submit', handleSubtopicSubmit);
     document.getElementById('resourceForm').addEventListener('submit', handleResourceSubmit);
     document.getElementById('uploadForm').addEventListener('submit', handleUploadSubmit);
+    document.getElementById('speakerForm').addEventListener('submit', handleSpeakerSubmit);
 
     // Resource type selector
     document.getElementById('resourceType').addEventListener('change', handleResourceTypeChange);
@@ -47,14 +126,7 @@ function initializeEventListeners() {
 
 // LocalStorage functions
 function saveToLocalStorage() {
-    localStorage.setItem('nearshorethemes', JSON.stringify(themes));
-}
-
-function loadFromLocalStorage() {
-    const stored = localStorage.getItem('nearshorethemes');
-    if (stored) {
-        themes = JSON.parse(stored);
-    }
+    DataStore.saveToLocalStorage(themes);
 }
 
 // Theme functions
@@ -318,6 +390,11 @@ function renderThemes() {
 }
 
 function renderSubtopic(themeId, subtopic) {
+    // Initialize speakers array if it doesn't exist
+    if (!subtopic.speakers) {
+        subtopic.speakers = [];
+    }
+    
     return `
         <div class="subtopic-item">
             <div class="subtopic-header">
@@ -325,6 +402,9 @@ function renderSubtopic(themeId, subtopic) {
                 <div class="subtopic-actions">
                     <button class="btn btn-secondary btn-small" onclick="openResourceModal('${themeId}', '${subtopic.id}')">
                         + Agregar Recurso
+                    </button>
+                    <button class="btn btn-secondary btn-small" onclick="openSpeakerModal('${themeId}', '${subtopic.id}')">
+                        + Agregar Speaker
                     </button>
                     <button class="btn btn-secondary btn-small" onclick="openUploadModal('subtopic', '${themeId}', '${subtopic.id}')">
                         📎 Subir Info
@@ -335,11 +415,20 @@ function renderSubtopic(themeId, subtopic) {
                 </div>
             </div>
             
-            ${subtopic.resources.length > 0 ? `
+            ${subtopic.resources && subtopic.resources.length > 0 ? `
                 <div class="resources">
                     ${subtopic.resources.map(resource => renderResource(themeId, subtopic.id, resource)).join('')}
                 </div>
             ` : '<p style="color: #999; font-size: 0.9rem; margin-top: 10px;">No hay recursos en este subtema</p>'}
+            
+            ${subtopic.speakers && subtopic.speakers.length > 0 ? `
+                <div class="speakers-section">
+                    <h5>Speakers</h5>
+                    <div class="speakers-list">
+                        ${subtopic.speakers.map(speaker => renderSpeaker(themeId, subtopic.id, speaker)).join('')}
+                    </div>
+                </div>
+            ` : ''}
             
             ${subtopic.attachments && subtopic.attachments.length > 0 ? `
                 <div class="attachments-section" style="margin-top: 15px; padding-top: 10px; border-top: 1px dashed #ccc;">
@@ -681,16 +770,134 @@ function waitForLibrary(libraryName, maxAttempts = 50) {
     });
 }
 
-// Utility functions
-function escapeHtml(text) {
-    const map = {
-        '&': '&amp;',
-        '<': '&lt;',
-        '>': '&gt;',
-        '"': '&quot;',
-        "'": '&#039;'
-    };
-    return text.replace(/[&<>"']/g, m => map[m]);
+// Speaker functions
+function renderSpeaker(themeId, subtopicId, speaker) {
+    return `
+        <div class="speaker-item">
+            <div class="speaker-info">
+                <div class="speaker-field">
+                    <label>Nombre</label>
+                    <span>${escapeHtml(speaker.name)}</span>
+                </div>
+                <div class="speaker-field">
+                    <label>Título/Rol</label>
+                    <span>${escapeHtml(speaker.title || '')}</span>
+                </div>
+                <div class="speaker-field">
+                    <label>Empresa</label>
+                    <span>${escapeHtml(speaker.company || '')}</span>
+                </div>
+                <div class="speaker-field">
+                    <label>Estatus</label>
+                    <div class="status-indicator">
+                        <span class="status-circle status-${speaker.status}"></span>
+                        <span class="status-text">${getStatusText(speaker.status)}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="speaker-actions">
+                <button class="btn btn-secondary btn-small" onclick="editSpeaker('${themeId}', '${subtopicId}', '${speaker.id}')">
+                    Editar
+                </button>
+                <button class="btn btn-danger btn-small" onclick="deleteSpeaker('${themeId}', '${subtopicId}', '${speaker.id}')">
+                    Eliminar
+                </button>
+            </div>
+        </div>
+    `;
+}
+
+function openSpeakerModal(themeId, subtopicId, speakerId = null) {
+    currentThemeId = themeId;
+    currentSubtopicId = subtopicId;
+    currentSpeakerId = speakerId;
+    
+    const modal = document.getElementById('speakerModal');
+    const form = document.getElementById('speakerForm');
+    const title = document.getElementById('speakerModalTitle');
+    
+    form.reset();
+    
+    if (speakerId) {
+        const theme = themes.find(t => t.id === themeId);
+        const subtopic = theme?.subtopics.find(s => s.id === subtopicId);
+        const speaker = subtopic?.speakers?.find(sp => sp.id === speakerId);
+        
+        if (speaker) {
+            title.textContent = 'Editar Speaker';
+            document.getElementById('speakerName').value = speaker.name;
+            document.getElementById('speakerTitle').value = speaker.title || '';
+            document.getElementById('speakerCompany').value = speaker.company || '';
+            document.getElementById('speakerStatus').value = speaker.status;
+        }
+    } else {
+        title.textContent = 'Agregar Speaker';
+    }
+    
+    modal.style.display = 'block';
+}
+
+function editSpeaker(themeId, subtopicId, speakerId) {
+    openSpeakerModal(themeId, subtopicId, speakerId);
+}
+
+function handleSpeakerSubmit(e) {
+    e.preventDefault();
+    
+    const name = document.getElementById('speakerName').value;
+    const title = document.getElementById('speakerTitle').value;
+    const company = document.getElementById('speakerCompany').value;
+    const status = document.getElementById('speakerStatus').value;
+    
+    const theme = themes.find(t => t.id === currentThemeId);
+    if (!theme) return;
+    
+    const subtopic = theme.subtopics.find(s => s.id === currentSubtopicId);
+    if (!subtopic) return;
+    
+    // Initialize speakers array if it doesn't exist
+    if (!subtopic.speakers) {
+        subtopic.speakers = [];
+    }
+    
+    if (currentSpeakerId) {
+        // Edit existing speaker
+        const speaker = subtopic.speakers.find(sp => sp.id === currentSpeakerId);
+        if (speaker) {
+            speaker.name = name;
+            speaker.title = title;
+            speaker.company = company;
+            speaker.status = status;
+        }
+    } else {
+        // Add new speaker
+        const newSpeaker = {
+            id: Date.now().toString(),
+            name: name,
+            title: title,
+            company: company,
+            status: status
+        };
+        subtopic.speakers.push(newSpeaker);
+    }
+    
+    saveToLocalStorage();
+    renderThemes();
+    document.getElementById('speakerModal').style.display = 'none';
+}
+
+function deleteSpeaker(themeId, subtopicId, speakerId) {
+    if (confirm('¿Estás seguro de que deseas eliminar este speaker?')) {
+        const theme = themes.find(t => t.id === themeId);
+        if (theme) {
+            const subtopic = theme.subtopics.find(s => s.id === subtopicId);
+            if (subtopic && subtopic.speakers) {
+                subtopic.speakers = subtopic.speakers.filter(sp => sp.id !== speakerId);
+                saveToLocalStorage();
+                renderThemes();
+            }
+        }
+    }
 }
 
 // Upload/Attachment functions
@@ -813,32 +1020,4 @@ function getFileIcon(filename) {
     return icons[ext] || '📎';
 }
 
-// Export/Import functions (bonus feature)
-function exportData() {
-    const dataStr = JSON.stringify(themes, null, 2);
-    const dataBlob = new Blob([dataStr], { type: 'application/json' });
-    const url = URL.createObjectURL(dataBlob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = 'nearshore-themes-backup.json';
-    link.click();
-    URL.revokeObjectURL(url);
-}
 
-function importData(file) {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-        try {
-            const imported = JSON.parse(e.target.result);
-            if (Array.isArray(imported)) {
-                themes = imported;
-                saveToLocalStorage();
-                renderThemes();
-                alert('Datos importados correctamente');
-            }
-        } catch (error) {
-            alert('Error al importar los datos: ' + error.message);
-        }
-    };
-    reader.readAsText(file);
-}

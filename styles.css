@@ -548,3 +548,191 @@ main {
     border-style: solid;
 }
 
+/* Speakers Section */
+.speakers-section {
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid #dee2e6;
+}
+
+.speakers-section h5 {
+    color: var(--primary-dark);
+    margin-bottom: 12px;
+    font-size: 1rem;
+}
+
+.speakers-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px var(--shadow);
+}
+
+.speakers-table thead {
+    background-color: var(--primary-beige);
+    color: var(--primary-dark);
+}
+
+.speakers-table th,
+.speakers-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.speakers-table th {
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.speakers-table tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+.speakers-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Status Indicator */
+.status-indicator {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.status-circle {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 2px solid #666;
+    display: inline-block;
+}
+
+.status-circle.status-white {
+    background-color: white;
+    border-color: #333;
+}
+
+.status-circle.status-yellow {
+    background-color: #ffd700;
+    border-color: #daa520;
+}
+
+.status-circle.status-red {
+    background-color: #dc3545;
+    border-color: #a71d2a;
+}
+
+.status-circle.status-black {
+    background-color: #000;
+    border-color: #000;
+}
+
+.status-text {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+/* Speaker Actions (for admin) */
+.speaker-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+}
+
+.speaker-item {
+    background: white;
+    padding: 12px;
+    margin-bottom: 10px;
+    border-radius: 6px;
+    border: 1px solid #dee2e6;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.speaker-info {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 2fr 2fr 2fr 1fr;
+    gap: 15px;
+    align-items: center;
+}
+
+.speaker-field {
+    display: flex;
+    flex-direction: column;
+}
+
+.speaker-field label {
+    font-size: 0.75rem;
+    color: #666;
+    margin-bottom: 2px;
+}
+
+.speaker-field span {
+    font-size: 0.9rem;
+    color: var(--primary-dark);
+}
+
+/* Public View Styles */
+.theme-description {
+    margin-top: 8px;
+    color: #555;
+    line-height: 1.6;
+}
+
+.section-title {
+    color: var(--primary-dark);
+    font-size: 0.95rem;
+    margin-top: 15px;
+    margin-bottom: 10px;
+    padding-bottom: 5px;
+    border-bottom: 2px solid var(--primary-beige);
+}
+
+.subtopic-title {
+    color: var(--primary-red);
+    font-size: 1.1rem;
+    margin-bottom: 10px;
+}
+
+/* Login Modal Specific Styles */
+#loginModal .modal-content {
+    max-width: 400px;
+}
+
+#loginModal code {
+    background-color: #f8f9fa;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-family: 'Courier New', monospace;
+    color: var(--primary-red);
+}
+
+/* Admin content hidden by default */
+#adminContent {
+    display: none;
+}
+
+/* Responsive improvements for speakers */
+@media (max-width: 768px) {
+    .speakers-table {
+        font-size: 0.85rem;
+    }
+    
+    .speakers-table th,
+    .speakers-table td {
+        padding: 8px;
+    }
+    
+    .speaker-info {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+}
+

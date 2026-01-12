@@ -1,0 +1,40 @@
+{
+  "version": 1,
+  "themes": [
+    {
+      "id": "1",
+      "name": "Tema de Ejemplo",
+      "description": "Este es un tema de ejemplo para demostrar la estructura",
+      "subtopics": [
+        {
+          "id": "1-1",
+          "name": "Subtema de Ejemplo",
+          "resources": [
+            {
+              "id": "1-1-1",
+              "type": "link",
+              "url": "https://example.com",
+              "title": "Enlace de ejemplo"
+            }
+          ],
+          "speakers": [
+            {
+              "id": "1-1-s1",
+              "name": "Juan Pérez",
+              "title": "Director de Tecnología",
+              "company": "Nearshore Tech",
+              "status": "white"
+            },
+            {
+              "id": "1-1-s2",
+              "name": "María García",
+              "title": "Gerente de Proyectos",
+              "company": "Tech Solutions",
+              "status": "yellow"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nearshore Connection - Administración</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <h2>Acceso Administrativo</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="adminPassword">Contraseña:</label>
+                    <input type="password" id="adminPassword" required placeholder="Ingrese la contraseña de administrador">
+                </div>
+                <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
+            </form>
+            <p style="margin-top: 15px; font-size: 0.9rem; color: #666;">
+                Contraseña predeterminada: <code>admin123</code>
+            </p>
+        </div>
+    </div>
+
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <img src="https://i.imgur.com/zEKUano.jpeg" alt="Nearshore Connection" class="logo">
+                <h1>Nearshore Connection - Admin</h1>
+            </div>
+        </div>
+    </header>
+
+    <main class="container" id="adminContent" style="display: none;">
+        <section class="controls">
+            <h2>Gestión de Temas y Subtemas</h2>
+            <div class="button-group">
+                <button id="addThemeBtn" class="btn btn-primary">+ Agregar Tema</button>
+                <button id="exportBtn" class="btn btn-secondary">📥 Exportar JSON</button>
+                <button id="importBtn" class="btn btn-secondary">📤 Importar JSON</button>
+                <input type="file" id="importFile" accept=".json" style="display: none;">
+                <button id="logoutBtn" class="btn btn-danger">Cerrar Sesión</button>
+            </div>
+        </section>
+
+        <section id="themesContainer" class="themes-container">
+            <!-- Los temas se agregarán dinámicamente aquí -->
+        </section>
+    </main>
+
+    <!-- Modal para agregar/editar tema -->
+    <div id="themeModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="modalTitle">Agregar Tema</h2>
+            <form id="themeForm">
+                <div class="form-group">
+                    <label for="themeName">Nombre del Tema:</label>
+                    <input type="text" id="themeName" required>
+                </div>
+                <div class="form-group">
+                    <label for="themeDescription">Descripción:</label>
+                    <textarea id="themeDescription" rows="3"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Guardar Tema</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal para agregar subtema -->
+    <div id="subtopicModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Agregar Subtema</h2>
+            <form id="subtopicForm">
+                <div class="form-group">
+                    <label for="subtopicName">Nombre del Subtema:</label>
+                    <input type="text" id="subtopicName" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Guardar Subtema</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal para agregar recurso -->
+    <div id="resourceModal" class="modal">
+        <div class="modal-content large">
+            <span class="close">&times;</span>
+            <h2>Agregar Recurso</h2>
+            <form id="resourceForm">
+                <div class="form-group">
+                    <label for="resourceType">Tipo de Recurso:</label>
+                    <select id="resourceType" required>
+                        <option value="">Seleccionar...</option>
+                        <option value="html">HTML + CSS + JavaScript</option>
+                        <option value="link">Enlace</option>
+                        <option value="file">Archivo</option>
+                    </select>
+                </div>
+
+                <!-- Campos para HTML -->
+                <div id="htmlFields" class="resource-fields" style="display: none;">
+                    <div class="form-group">
+                        <label for="fullHtmlCode">Código HTML Completo:</label>
+                        <p style="font-size: 0.9rem; color: #666; margin-bottom: 10px;">
+                            Pega tu código HTML completo aquí. Puede incluir tags &lt;style&gt; para CSS y &lt;script&gt; para JavaScript.
+                        </p>
+                        <textarea id="fullHtmlCode" rows="20" placeholder="<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        /* Tu CSS aquí */
+    </style>
+</head>
+<body>
+    <!-- Tu HTML aquí -->
+    <script>
+        // Tu JavaScript aquí
+    </script>
+</body>
+</html>"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <button type="button" id="previewBtn" class="btn btn-secondary">Vista Previa</button>
+                    </div>
+                    <div id="previewContainer" class="preview-container" style="display: none;">
+                        <h4>Vista Previa:</h4>
+                        <div id="previewFrame" class="preview-frame"></div>
+                    </div>
+                </div>
+
+                <!-- Campos para Link -->
+                <div id="linkFields" class="resource-fields" style="display: none;">
+                    <div class="form-group">
+                        <label for="linkUrl">URL:</label>
+                        <input type="url" id="linkUrl" placeholder="https://ejemplo.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="linkTitle">Título del Enlace:</label>
+                        <input type="text" id="linkTitle" placeholder="Nombre del enlace">
+                    </div>
+                </div>
+
+                <!-- Campos para File -->
+                <div id="fileFields" class="resource-fields" style="display: none;">
+                    <div class="form-group">
+                        <label for="fileUrl">URL del Archivo:</label>
+                        <input type="url" id="fileUrl" placeholder="https://ejemplo.com/archivo.pdf">
+                    </div>
+                    <div class="form-group">
+                        <label for="fileName">Nombre del Archivo:</label>
+                        <input type="text" id="fileName" placeholder="documento.pdf">
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Agregar Recurso</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal para subir información adicional -->
+    <div id="uploadModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="uploadModalTitle">Subir Información Adicional</h2>
+            <form id="uploadForm">
+                <div class="form-group">
+                    <label for="uploadTitle">Título del Archivo:</label>
+                    <input type="text" id="uploadTitle" required placeholder="Ej: Presentación 2026">
+                </div>
+                <div class="form-group">
+                    <label for="uploadFile">Seleccionar Archivo:</label>
+                    <input type="file" id="uploadFile" required accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.jpg,.jpeg,.png,.gif,.txt,.zip">
+                    <small style="color: #666; display: block; margin-top: 5px;">Formatos permitidos: PDF, Word, Excel, PowerPoint, imágenes, texto, ZIP</small>
+                </div>
+                <div class="form-group">
+                    <label for="uploadDescription">Descripción (opcional):</label>
+                    <textarea id="uploadDescription" rows="3" placeholder="Descripción breve del archivo"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">📎 Subir Archivo</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal para agregar/editar speaker -->
+    <div id="speakerModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="speakerModalTitle">Agregar Speaker</h2>
+            <form id="speakerForm">
+                <div class="form-group">
+                    <label for="speakerName">Nombre:</label>
+                    <input type="text" id="speakerName" required placeholder="Nombre completo del speaker">
+                </div>
+                <div class="form-group">
+                    <label for="speakerTitle">Título/Rol:</label>
+                    <input type="text" id="speakerTitle" placeholder="Ej: Director de Tecnología">
+                </div>
+                <div class="form-group">
+                    <label for="speakerCompany">Empresa:</label>
+                    <input type="text" id="speakerCompany" placeholder="Nombre de la empresa">
+                </div>
+                <div class="form-group">
+                    <label for="speakerStatus">Estatus:</label>
+                    <select id="speakerStatus" required>
+                        <option value="white">⚪ Blanco</option>
+                        <option value="yellow">🟡 Amarillo</option>
+                        <option value="red">🔴 Rojo</option>
+                        <option value="black">⚫ Negro</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Guardar Speaker</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/utils.js"></script>
+    <script src="js/dataStore.js"></script>
+    <script src="app.js"></script>
+
+</body>
+</html>
