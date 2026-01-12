@@ -26,8 +26,12 @@ function showLoginModal() {
     document.getElementById('loginModal').style.display = 'block';
     document.getElementById('adminContent').style.display = 'none';
     
-    // Setup login form
-    document.getElementById('loginForm').addEventListener('submit', handleLogin);
+    // Setup login form (only once)
+    const loginForm = document.getElementById('loginForm');
+    if (!loginForm.dataset.listenerAdded) {
+        loginForm.addEventListener('submit', handleLogin);
+        loginForm.dataset.listenerAdded = 'true';
+    }
 }
 
 function handleLogin(e) {
@@ -894,28 +898,6 @@ function deleteSpeaker(themeId, subtopicId, speakerId) {
             }
         }
     }
-}
-
-function getStatusText(status) {
-    const statusMap = {
-        'white': 'Blanco',
-        'yellow': 'Amarillo',
-        'red': 'Rojo',
-        'black': 'Negro'
-    };
-    return statusMap[status] || status;
-}
-
-// Utility functions
-function escapeHtml(text) {
-    const map = {
-        '&': '&amp;',
-        '<': '&lt;',
-        '>': '&gt;',
-        '"': '&quot;',
-        "'": '&#039;'
-    };
-    return text.replace(/[&<>"']/g, m => map[m]);
 }
 
 // Upload/Attachment functions

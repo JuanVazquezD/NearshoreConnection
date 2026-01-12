@@ -354,25 +354,3 @@ function waitForLibrary(libraryName, maxAttempts = 50) {
     });
 }
 
-// Utility functions
-function escapeHtml(text) {
-    if (!text) return '';
-    const map = {
-        '&': '&amp;',
-        '<': '&lt;',
-        '>': '&gt;',
-        '"': '&quot;',
-        "'": '&#039;'
-    };
-    return String(text).replace(/[&<>"']/g, m => map[m]);
-}
-
-function getStatusText(status) {
-    const statusMap = {
-        'white': 'Blanco',
-        'yellow': 'Amarillo',
-        'red': 'Rojo',
-        'black': 'Negro'
-    };
-    return statusMap[status] || status;
-}
