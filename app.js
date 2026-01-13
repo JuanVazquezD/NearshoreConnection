@@ -54,7 +54,327 @@ function loadFromLocalStorage() {
     const stored = localStorage.getItem('nearshorethemes');
     if (stored) {
         themes = JSON.parse(stored);
+    } else {
+        // Pre-populate with sample data from previous project
+        themes = getInitialSampleData();
+        saveToLocalStorage();
     }
+}
+
+function getInitialSampleData() {
+    return [
+        {
+            id: '1704063600000',
+            name: 'Nearshoring y Estrategia Manufacturera 2026',
+            description: 'Análisis de tendencias críticas en manufactura norteamericana: Nearshoring, Energía, Logística e Innovación',
+            subtopics: [
+                {
+                    id: '1704063601000',
+                    name: 'Estrategia Manufacturera Norteamérica 2026',
+                    resources: [
+                        {
+                            id: '1704063602000',
+                            type: 'html',
+                            fullHtml: `<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>North American Manufacturing Summit 2026: Strategic Horizons</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+    
+    <!-- Plotly.js -->
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f0f4f8;
+            color: #1a202c;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px; 
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .gradient-text {
+            background: linear-gradient(90deg, #023e8a 0%, #0096c7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .lang-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            display: flex;
+            gap: 10px;
+        }
+        .lang-btn button {
+            padding: 8px 16px;
+            background: #0077b6;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        .lang-btn button:hover {
+            background: #023e8a;
+            transform: translateY(-2px);
+        }
+        .lang-btn button.active {
+            background: #ce4839;
+        }
+    </style>
+</head>
+<body class="bg-slate-100">
+
+    <!-- Botones de Idioma -->
+    <div class="lang-btn">
+        <button onclick="cambiarIdioma('es')" id="btnEs" class="active">🇪🇸 Español</button>
+        <button onclick="cambiarIdioma('en')" id="btnEn">🇺🇸 English</button>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        <header class="mb-12 text-center">
+            <h1 class="text-4xl md:text-6xl font-bold mb-4 gradient-text tracking-tight" data-es="Estrategia Manufacturera Norteamérica 2026" data-en="North American Manufacturing Strategy 2026">Estrategia Manufacturera Norteamérica 2026</h1>
+            <p class="text-xl text-gray-600 max-w-3xl mx-auto" data-es="San Antonio, TX | 16 de Abril, 2026" data-en="San Antonio, TX | April 16, 2026">San Antonio, TX | 16 de Abril, 2026</p>
+            <p class="mt-4 text-gray-500" data-es="Análisis de tendencias críticas: Nearshoring, Energía, Logística e Innovación." data-en="Critical trends analysis: Nearshoring, Energy, Logistics and Innovation.">Análisis de tendencias críticas: Nearshoring, Energía, Logística e Innovación.</p>
+        </header>
+
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-8 mb-12">
+            <div class="md:col-span-12">
+                <div class="bg-white rounded-xl shadow-lg p-8 border-l-8 border-[#0096c7]">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6" data-es="¿Qué sigue del Nearshoring? ¿Crece a Ally-shoring o muere a Off-shoring?" data-en="What's next for Nearshoring? Does it grow into Ally-shoring or die to Off-shoring?">¿Qué sigue del Nearshoring? ¿Crece a Ally-shoring o muere a Off-shoring?</h2>
+                    <p class="text-gray-600 mb-8 leading-relaxed" data-es="La manufactura busca aliados geopolíticos (Ally-shoring) bajo el T-MEC, pero la decisión de inversión final será dictada por la **capacidad instalada**. La escasez de agua, la falta de capacidad eléctrica y la nueva competencia de los mega **Data Centers (1.4 GW)** presionan a las industrias de alto consumo a buscar territorios fuera de la región T-MEC donde el suministro y el costo lo permitan, más que la lealtad de alianzas." data-en="Manufacturing seeks geopolitical allies (Ally-shoring) under USMCA, but the final investment decision will be dictated by **installed capacity**. Water scarcity, lack of electrical capacity and new competition from mega **Data Centers (1.4 GW)** pressure high-consumption industries to seek territories outside the USMCA region where supply and cost allow, rather than alliance loyalty.">
+                        La manufactura busca aliados geopolíticos (Ally-shoring) bajo el T-MEC, pero la decisión de inversión final será dictada por la **capacidad instalada**. La escasez de agua, la falta de capacidad eléctrica y la nueva competencia de los mega **Data Centers (1.4 GW)** presionan a las industrias de alto consumo a buscar territorios fuera de la región T-MEC donde el suministro y el costo lo permitan, más que la lealtad de alianzas.
+                    </p>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-700 mb-4 border-b pb-2 border-gray-200" data-es="Dilema de Recursos vs. Geopolítica" data-en="Resources vs. Geopolitics Dilemma">Dilema de Recursos vs. Geopolítica</h3>
+                            <div class="chart-container mt-6">
+                                <canvas id="shippingComparisonChart"></canvas>
+                            </div>
+                            <p class="text-sm text-center text-gray-500 mt-2" data-es="Comparativa de Tiempos de Tránsito (Días)" data-en="Transit Time Comparison (Days)">Comparativa de Tiempos de Tránsito (Días)</p>
+                        </div>
+
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-700 mb-4 border-b pb-2 border-gray-200" data-es="El Consumo de Data Centers: La Nueva Competencia por la Red" data-en="Data Center Consumption: The New Grid Competition">El Consumo de Data Centers: La Nueva Competencia por la Red</h3>
+                            <div class="chart-container">
+                                <canvas id="energyConsumptionChart"></canvas>
+                            </div>
+                            <p class="text-xs text-center text-gray-400 mt-2" data-es="Comparativa de Consumo Pico Estimado" data-en="Estimated Peak Consumption Comparison">Comparativa de Consumo Pico Estimado</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-8 mb-12">
+            
+            <div class="md:col-span-12 lg:col-span-5">
+                <div class="bg-white rounded-xl shadow-lg p-6 h-full flex flex-col justify-between border-t-4 border-[#ffb703]">
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-800 mb-4" data-es="El Litio es el Nuevo Uranio: La nueva arma geopolítica y la trampa de la Regla de Origen" data-en="Lithium is the New Uranium: The new geopolitical weapon and the Rule of Origin trap">El Litio es el Nuevo Uranio: La nueva arma geopolítica y la trampa de la Regla de Origen</h2>
+                        <div class="chart-container" style="height: 250px; max-height: 300px;">
+                            <canvas id="evMarketShareChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="md:col-span-12 lg:col-span-7">
+                <div class="bg-white rounded-xl shadow-lg p-8 h-full">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6" data-es="La Distancia entre el Istmo de Oaxaca y el Canal de Panamá" data-en="The Distance between the Isthmus of Oaxaca and the Panama Canal">La Distancia entre el Istmo de Oaxaca y el Canal de Panamá</h2>
+                    
+                    <div class="mt-8">
+                        <div id="isthmusPlot" style="width:100%; height:350px;"></div>
+                        <p class="text-xs text-center text-gray-500 mt-2" data-es="Proyección de volumen de carga (TEUs) capturado por rutas alternativas." data-en="Projected cargo volume (TEUs) captured by alternative routes.">Proyección de volumen de carga (TEUs) capturado por rutas alternativas.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        let idiomaActual = 'es';
+        
+        function cambiarIdioma(idioma) {
+            idiomaActual = idioma;
+            document.getElementById('btnEs').classList.toggle('active', idioma === 'es');
+            document.getElementById('btnEn').classList.toggle('active', idioma === 'en');
+            
+            // Cambiar todos los textos
+            document.querySelectorAll('[data-es][data-en]').forEach(el => {
+                el.textContent = el.getAttribute('data-' + idioma);
+            });
+            
+            // Recrear gráficas con nuevo idioma
+            crearGraficas();
+        }
+        
+        function crearGraficas() {
+            const labels = idiomaActual === 'es' ? {
+                shipping: ['Shanghai a Los Angeles', 'Shanghai a Nueva York', 'Monterrey a San Antonio', 'Bajío a Laredo'],
+                shippingTitle: 'Comparativa de Tiempos de Envío - Nearshoring',
+                days: 'Días',
+                energy: ['Consumo Pico Manhattan', 'Mega Data Center (Proyectado)', 'Consumo Pico San Francisco', 'Planta Automotriz Típica'],
+                ev: ['Ventas Vehículo Tradicional (ICE)', 'Ventas Nuevas Energías (EV/Híbridos)']
+            } : {
+                shipping: ['Shanghai to Los Angeles', 'Shanghai to New York', 'Monterrey to San Antonio', 'Bajío to Laredo'],
+                shippingTitle: 'Shipping Time Comparison - Nearshoring',
+                days: 'Days',
+                energy: ['Manhattan Peak Consumption', 'Mega Data Center (Projected)', 'San Francisco Peak', 'Typical Auto Plant'],
+                ev: ['Traditional Vehicle Sales (ICE)', 'New Energy Sales (EV/Hybrid)']
+            };
+            
+            // Limpiar gráficas anteriores
+            ['shippingComparisonChart', 'energyConsumptionChart', 'evMarketShareChart'].forEach(id => {
+                const canvas = document.getElementById(id);
+                const existingChart = Chart.getChart(canvas);
+                if (existingChart) existingChart.destroy();
+            });
+            
+            // Gráfica de Shipping
+            new Chart(document.getElementById('shippingComparisonChart').getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: labels.shipping,
+                    datasets: [{
+                        label: labels.days,
+                        data: [20, 32, 1, 2],
+                        backgroundColor: ['#90E0EF', '#90E0EF', '#FFB703', '#0077B6']
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    maintainAspectRatio: false,
+                    responsive: true,
+                    plugins: {
+                        legend: { display: false },
+                        title: { display: true, text: labels.shippingTitle, font: { size: 14 } }
+                    }
+                }
+            });
+            
+            // Gráfica de Energía
+            new Chart(document.getElementById('energyConsumptionChart').getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: labels.energy,
+                    datasets: [{
+                        label: 'Gigavatios (GW)',
+                        data: [1.6, 1.4, 0.9, 0.05],
+                        backgroundColor: ['#e0e0e0', '#FFB703', '#e0e0e0', '#e0e0e0']
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    responsive: true,
+                    plugins: { legend: { display: false } }
+                }
+            });
+            
+            // Gráfica EV con más espacio
+            new Chart(document.getElementById('evMarketShareChart').getContext('2d'), {
+                type: 'doughnut',
+                data: {
+                    labels: labels.ev,
+                    datasets: [{
+                        data: [82, 18],
+                        backgroundColor: ['#e0e0e0', '#00B4D8']
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 15,
+                                font: { size: 11 },
+                                boxWidth: 15
+                            }
+                        }
+                    },
+                    layout: {
+                        padding: {
+                            top: 10,
+                            bottom: 20,
+                            left: 10,
+                            right: 10
+                        }
+                    }
+                }
+            });
+            
+            // Plotly
+            if (typeof Plotly !== 'undefined') {
+                const plotlyLabels = idiomaActual === 'es' ? {
+                    panama: 'Capacidad Canal Panamá',
+                    isthmus: 'Capacidad Istmo',
+                    year: 'Año',
+                    index: 'Índice de Capacidad'
+                } : {
+                    panama: 'Panama Canal Capacity',
+                    isthmus: 'Isthmus Capacity',
+                    year: 'Year',
+                    index: 'Capacity Index'
+                };
+                
+                Plotly.newPlot('isthmusPlot', [
+                    { x: ['2023', '2024', '2025', '2026'], y: [100, 85, 88, 90], mode: 'lines+markers', name: plotlyLabels.panama, line: {color: '#0077B6', width: 3} },
+                    { x: ['2023', '2024', '2025', '2026'], y: [5, 15, 30, 45], mode: 'lines+markers', name: plotlyLabels.isthmus, line: {color: '#FFB703', width: 3, dash: 'dot'} }
+                ], {
+                    showlegend: true,
+                    legend: { orientation: 'h', y: -0.2 },
+                    margin: { t: 20, r: 20, l: 40, b: 40 },
+                    xaxis: { title: plotlyLabels.year },
+                    yaxis: { title: plotlyLabels.index }
+                }, { responsive: true, displayModeBar: false });
+            }
+        }
+        
+        // Ejecutar cuando DOM esté listo
+        (function() {
+            setTimeout(crearGraficas, 100);
+        })();
+    </script>
+</body>
+</html>`
+                        }
+                    ],
+                    attachments: []
+                }
+            ],
+            attachments: []
+        }
+    ];
 }
 
 // Theme functions
