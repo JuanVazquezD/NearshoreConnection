@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>North American Manufacturing Summit 2025: Strategic Horizons</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f0f4f8;
+            color: #1a202c;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px; 
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .gradient-text {
+            background: linear-gradient(90deg, #023e8a 0%, #0096c7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .accordion-header {
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        .accordion-content.active {
+            max-height: 500px; 
+            transition: max-height 0.5s ease-in;
+        }
+    </style>
+</head>
+<body class="bg-slate-100">
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        <header class="mb-12 text-center">
+            <h1 class="text-4xl md:text-6xl font-bold mb-4 gradient-text tracking-tight">Estrategia Manufacturera Norteamérica 2025</h1>
+            <p class="text-xl text-gray-600 max-w-3xl mx-auto">San Antonio, TX | 16 de Abril, 2025</p>
+            <p class="mt-4 text-gray-500">Análisis de tendencias críticas: Nearshoring, Energía, Logística e Innovación.</p>
+        </header>
+
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-8 mb-12">
+            <div class="md:col-span-12">
+                <div class="bg-white rounded-xl shadow-lg p-8 border-l-8 border-[#0096c7]">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6">¿Qué sigue del Nearshoring? ¿Crece a Ally-shoring o muere a Off-shoring?</h2>
+                    <p class="text-gray-600 mb-8 leading-relaxed">
+                        La manufactura busca aliados geopolíticos (Ally-shoring) bajo el T-MEC, pero la decisión de inversión final será dictada por la **capacidad instalada**. La escasez de agua, la falta de capacidad eléctrica y la nueva competencia de los mega **Data Centers (1.4 GW)** presionan a las industrias de alto consumo a buscar territorios fuera de la región T-MEC donde el suministro y el costo lo permitan, más que la lealtad de alianzas.
+                    </p>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+                        <!-- Left Column: Ally-shoring and Water/Logistics -->
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-700 mb-4 border-b pb-2 border-gray-200">Dilema de Recursos vs. Geopolítica</h3>
+                            <div class="space-y-6">
+                                <div class="flex items-start">
+                                    <span class="text-3xl mr-3">💧</span>
+                                    <div>
+                                        <h4 class="font-bold text-gray-800">El Costo del Agua en el Norte</h4>
+                                        <p class="text-sm text-gray-600">La falta de disponibilidad hídrica en hubs fronterizos clave (Mty, Bajío) está obligando a detener o reevaluar proyectos de alto consumo (ej: bebidas, papel, chips), favoreciendo otros países.</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start">
+                                    <span class="text-3xl mr-3">📉</span>
+                                    <div>
+                                        <h4 class="font-bold text-gray-800">Reducción de Inventarios</h4>
+                                        <p class="text-sm text-gray-600">La principal ventaja del Nearshoring es la logística. Los tiempos de tránsito de México a EE. UU. (1-2 días) son críticos frente a Asia (20-32 días).</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="chart-container mt-6">
+                                <canvas id="shippingComparisonChart"></canvas>
+                            </div>
+                            <p class="text-sm text-center text-gray-500 mt-2">Comparativa de Tiempos de Tránsito (Días)</p>
+                        </div>
+
+                        <!-- Right Column: Energy Competition (Data Center) -->
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-700 mb-4 border-b pb-2 border-gray-200">El Consumo de Data Centers: La Nueva Competencia por la Red</h3>
+                            <p class="text-gray-600 mb-6 text-sm">
+                                Un único mega Data Center puede consumir **1.4 GW**, rivalizando con el consumo pico de **Manhattan (1.6 GW)**. Las empresas manufactureras ahora compiten directamente con el sector tecnológico por la misma capacidad eléctrica, elevando los costos y la complejidad para asegurar el suministro.
+                            </p>
+                            <div class="chart-container">
+                                <canvas id="energyConsumptionChart"></canvas>
+                            </div>
+                            <p class="text-xs text-center text-gray-400 mt-2">Comparativa de Consumo Pico Estimado</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-8 mb-12">
+            
+            <div class="md:col-span-12 lg:col-span-5">
+                <div class="bg-white rounded-xl shadow-lg p-6 h-full flex flex-col justify-between border-t-4 border-[#ffb703]">
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-800 mb-4">El Litio es el Nuevo Uranio: La nueva arma geopolítica y la trampa de la Regla de Origen</h2>
+                        <p class="text-gray-600 mb-4 text-sm leading-relaxed">
+                            La soberanía del litio de México (**Plan Sonora**) es un objetivo estratégico, pero la **Ley IRA de EE. UU.** ha creado una trampa. Si el litio extraído no es **refinado** en Norteamérica, se considera componente de una "Entidad Extranjera Preocupante" (China), y el EV final pierde el subsidio. Esta es la máxima presión para localizar la tecnología de procesamiento de minerales.
+                        </p>
+                        <div class="grid grid-cols-2 gap-4 text-center mb-4">
+                            <div>
+                                <p class="text-3xl font-bold text-[#0077b6]">Modelo EV US</p>
+                                <p class="text-xs text-gray-500">Dependiente de Subsidios IRA</p>
+                            </div>
+                            <div>
+                                <p class="text-3xl font-bold text-[#00b4d8]">Modelo EV Asia</p>
+                                <p class="text-xs text-gray-500">Enfoque: Costo y Volumen Global</p>
+                            </div>
+                        </div>
+                        <div class="chart-container" style="height: 200px; max-height: 250px;">
+                            <canvas id="evMarketShareChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="mt-4 bg-gray-100 p-3 rounded-lg">
+                        <h4 class="font-bold text-red-700 text-sm">Futuro de la Industria EV:</h4>
+                        <p class="text-xs text-gray-700 mt-1">
+                            El sector automotriz mexicano se fragmentará: habrá plantas que produzcan para el mercado **chino/global** (sin IRA) y plantas que sirvan a la demanda **IRA/T-MEC** (con componentes 100% regionales). La decisión de cada fabricante define el futuro de su inversión.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="md:col-span-12 lg:col-span-7">
+                <div class="bg-white rounded-xl shadow-lg p-8 h-full">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6">La Distancia entre el Istmo de Oaxaca y el Canal de Panamá: ¿Quién se aleja y quién se acerca en el Nearshoring?</h2>
+                    <p class="text-gray-600 mb-8">
+                        Panamá, afectado por el clima, se aleja. El CIIT, con su promesa multimodal, se acerca. Sin embargo, la industria debe debatir si la **velocidad** del tren (Istmo) compensa la **capacidad** y el **riesgo** logístico. El CIIT es una ruta de nicho, pero su éxito es crucial para despresurizar el cuello de botella Pacífico-Atlántico que afecta a toda la manufactura.
+                    </p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        
+                        <div class="bg-slate-50 border border-slate-200 rounded-lg p-6">
+                            <div class="flex items-center mb-4">
+                                <span class="text-4xl mr-4">🚢</span>
+                                <div>
+                                    <h3 class="text-xl font-bold text-gray-800">Canal de Panamá (Riesgo Climático)</h3>
+                                    <span class="text-xs font-semibold bg-red-100 text-red-800 px-2 py-1 rounded">Costo Alto / Demora Larga</span>
+                                </div>
+                            </div>
+                            <ul class="space-y-3 text-sm text-gray-700">
+                                <li class="flex justify-between border-b border-gray-200 pb-2">
+                                    <span>Tiempo de Cruce:</span>
+                                    <span class="font-bold">8 - 10 Horas (Tránsito)</span>
+                                </li>
+                                <li class="flex justify-between border-b border-gray-200 pb-2">
+                                    <span>Espera Promedio (Sequía):</span>
+                                    <span class="font-bold">10 - 15 Días</span>
+                                </li>
+                                <li class="flex justify-between border-b border-gray-200 pb-2">
+                                    <span>Capacidad:</span>
+                                    <span class="font-bold">Alta (Post-Panamax)</span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        
+                        <div class="bg-teal-50 border border-teal-200 rounded-lg p-6">
+                            <div class="flex items-center mb-4">
+                                <span class="text-4xl mr-4">🚂</span>
+                                <div>
+                                    <h3 class="text-xl font-bold text-gray-800">Istmo de Tehuantepec (Oportunidad Multimodal)</h3>
+                                    <span class="text-xs font-semibold bg-green-100 text-green-800 px-2 py-1 rounded">Velocidad / Incentivos Fiscales</span>
+                                </div>
+                            </div>
+                            <ul class="space-y-3 text-sm text-gray-700">
+                                <li class="flex justify-between border-b border-teal-200 pb-2">
+                                    <span>Tiempo de Cruce (Tren):</span>
+                                    <span class="font-bold">6 - 8 Horas</span>
+                                </li>
+                                <li class="flex justify-between border-b border-teal-200 pb-2">
+                                    <span>Transferencia (Buque-Tren-Buque):</span>
+                                    <span class="font-bold">2 - 3 Días (Total)</span>
+                                </li>
+                                <li class="flex justify-between border-b border-teal-200 pb-2">
+                                    <span>Reto Principal:</span>
+                                    <span class="font-bold">Infraestructura Portuaria</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-8">
+                        <div id="isthmusPlot" style="width:100%; height:350px;"></div>
+                        <p class="text-xs text-center text-gray-500 mt-2">Proyección de volumen de carga (TEUs) capturado por rutas alternativas.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+            
+            <div class="md:col-span-1 bg-white rounded-xl shadow-lg p-8 border-l-8 border-[#0077b6]">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">El COVID-19.15: Ciberataque al T-MEC</h2>
+                <p class="text-gray-600 mb-6 leading-relaxed text-sm">
+                    **Pandemia Digital aún sin vacuna.** El ciberataque es el virus que explota el eslabón débil de la cadena (la PYME mexicana) para paralizar al gigante Norteamericano. El **Artículo 19.15 del T-MEC** exige el manejo seguro de la información. La falta de inversión en ciberseguridad es un riesgo sistémico que podría detener el comercio transfronterizo.
+                </p>
+                <div class="grid grid-cols-1 gap-4 items-center">
+                    <div>
+                        <div class="chart-container h-48 max-h-48">
+                            <canvas id="cyberRiskChart"></canvas>
+                        </div>
+                        <p class="text-sm text-center text-gray-500 mt-2">Aumento Proyectado de Ciberataques a Cadenas de Suministro (Índice Base 100)</p>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="flex items-start bg-red-50 p-3 rounded">
+                            <span class="text-3xl mr-3 text-red-600">🛑</span>
+                            <div>
+                                <h4 class="font-bold text-gray-800">El Eslabón Débil: PYMES</h4>
+                                <p class="text-sm text-gray-600">Un *ransomware* dirigido a un proveedor Tier 2 puede paralizar una planta de un OEM en Texas. Es la puerta de entrada a la cadena de valor.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="md:col-span-1 bg-white rounded-xl shadow-lg p-8 border-l-8 border-[#00b4d8]">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">¿Toyota Way vs. ChatGPT Way? El Debate de la Eficiencia 4.0</h2>
+                <p class="text-gray-600 mb-6 leading-relaxed text-sm">
+                    **Toyota Way (TW)** se basa en el **respeto por la gente** y la mejora continua (*Kaizen*). El **ChatGPT Way (IA Generativa)** se basa en la **velocidad algorítmica** y el análisis predictivo. La pregunta es: ¿Puede la IA reemplazar la sabiduría colectiva, o solo amplificarla? ¿Quién ganará en la fábrica inteligente de San Antonio?
+                </p>
+                <div class="chart-container h-48 max-h-48">
+                    <canvas id="innovationRadarChart"></canvas>
+                </div>
+                <p class="text-sm text-center text-gray-500 mt-2">Comparativa de Fortalezas en Manufactura</p>
+                <div class="mt-4 bg-gray-100 p-3 rounded-lg">
+                    <h4 class="font-bold text-gray-800 text-sm">El Dilema de la Cultura:</h4>
+                    <p class="text-xs text-gray-700 mt-1">
+                        La IA sin una cultura de "detener la línea" cuando hay un error (principio de TW) puede llevar a la automatización de fallas a escala masiva. La ética de la IA aplicada a la producción es el verdadero debate.
+                    </p>
+                </div>
+            </div>
+
+            <div class="md:col-span-1 bg-white rounded-xl shadow-lg p-8 border-l-8 border-[#90e0ef]">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">El Muro más alto: ¿Cemento vs. Aduana?</h2>
+                <p class="text-gray-600 mb-6 leading-relaxed text-sm">
+                    El verdadero muro en la frontera no es de cemento, sino de **burocracia aduanera** y la falta de **tecnología inteligente**. Si la carga nearshoring llega más rápido desde Asia (32 días) que lo que tarda en cruzar la frontera (4 horas - 4 días), la ventaja logística se anula. El debate se centra en **invertir en infraestructura física (carriles, puentes) o digital (pre-autorización, IA).**
+                </p>
+                <div class="grid grid-cols-2 gap-4 text-center">
+                    <div class="p-3 bg-red-100 rounded-lg">
+                        <p class="text-3xl font-bold text-red-700">1-4 Días</p>
+                        <p class="text-xs text-gray-600">Espera Fronteriza Promedio</p>
+                    </div>
+                    <div class="p-3 bg-green-100 rounded-lg">
+                        <p class="text-3xl font-bold text-green-700">1-2 Horas</p>
+                        <p class="text-xs text-gray-600">Meta con Tecnología Inteligente</p>
+                    </div>
+                </div>
+                <div class="mt-4 bg-gray-100 p-3 rounded-lg">
+                    <h4 class="font-bold text-gray-800 text-sm">Controversia Logística:</h4>
+                    <p class="text-xs text-gray-700 mt-1">
+                        Los cruces fronterizos se convierten en el cuello de botella del Nearshoring. ¿Es mejor construir más infraestructura o enfocar los recursos en estandarizar la documentación y la inspección digital?
+                    </p>
+                </div>
+            </div>
+
+            <div class="md:col-span-1 bg-white rounded-xl shadow-lg p-8 border-l-8 border-[#00b4d8]">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">Aeroespacial: ¿Qué está más lejos, el Talento, los Componentes o el Espacio?</h2>
+                <p class="text-gray-600 mb-6 leading-relaxed text-sm">
+                    El sector aeroespacial está creciendo en Texas, Querétaro y Baja California, pero enfrenta una triple crisis: **1) Talento:** Fuga de cerebros e ingenieros certificados. **2) Componentes:** Fuerte dependencia de metales y componentes especializados fuera del T-MEC. **3) Espacio:** La necesidad de certificar proveedores Tier 2 y 3 para vuelos tripulados. El debate es dónde debe enfocarse la inversión regional.
+                </p>
+                <div class="grid grid-cols-3 gap-3 text-center">
+                    <div class="p-3 bg-gray-50 rounded-lg border border-gray-200">
+                        <p class="text-xl font-bold text-[#0077b6]">✈️</p>
+                        <p class="text-xs text-gray-600">Certificación</p>
+                    </div>
+                    <div class="p-3 bg-gray-50 rounded-lg border border-gray-200">
+                        <p class="text-xl font-bold text-[#0077b6]">🧠</p>
+                        <p class="text-xs text-gray-600">Ingenieros</p>
+                    </div>
+                    <div class="p-3 bg-gray-50 rounded-lg border border-gray-200">
+                        <p class="text-xl font-bold text-[#0077b6]">🛰️</p>
+                        <p class="text-xs text-gray-600">Componentes</p>
+                    </div>
+                </div>
+                <div class="mt-4 bg-gray-100 p-3 rounded-lg">
+                    <h4 class="font-bold text-gray-800 text-sm">Prioridad Estratégica:</h4>
+                    <p class="text-xs text-gray-700 mt-1">
+                        Sin un programa acelerado de formación de talento técnico (soldadura de precisión, materiales compuestos), la base manufacturera de Norteamérica no podrá capturar el valor de las grandes inversiones en el espacio (ej. SpaceX, Blue Origin).
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-gray-900 rounded-xl shadow-xl p-8 text-white mb-12">
+            <div class="text-center mb-10">
+                <h2 class="text-3xl font-bold mb-4">Agenda Estratégica: Debates y Talleres de Alto Impacto</h2>
+                <p class="text-gray-400 max-w-2xl mx-auto">Haga clic en el título del Panel para ver el análisis de debate. Las Conferencias y Talleres se mantienen para la versión ejecutiva.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                
+                <div class="bg-gray-800 rounded-lg p-5 border-t-4 border-[#00b4d8]">
+                    <h3 class="text-xl font-bold text-[#00b4d8] mb-4">📦 Logística y Cadena</h3>
+                    <div class="space-y-4">
+                        <div class="bg-gray-700 p-3 rounded">
+                            <span class="text-xs text-gray-400 uppercase tracking-wide">Conferencia</span>
+                            <p class="font-semibold text-sm">"Del Just-in-Time al Just-in-Case: Resiliencia en la Milla Norteamericana"</p>
+                        </div>
+                        
+                        <!-- Panel 1 - Logística -->
+                        <div class="bg-gray-700 p-0 rounded overflow-hidden shadow-md">
+                            <div class="accordion-header flex justify-between items-center p-3 hover:bg-gray-600" onclick="toggleDetails('panel-1-logistica')">
+                                <p class="font-bold text-sm leading-snug">Fronteras Inteligentes: Tecnología para agilizar cruces Laredo-Colombia</p>
+                                <span class="text-lg ml-2 transform rotate-0 transition-transform duration-300" id="icon-panel-1-logistica">▼</span>
+                            </div>
+                            <div class="accordion-content" id="panel-1-logistica">
+                                <div class="p-3 bg-gray-600 text-gray-200 text-xs">
+                                    <p class="font-bold mb-2 text-[#90e0ef]">El Nearshoring trajo el volumen, pero la frontera no puede con la velocidad.</p>
+                                    <p class="mb-2">**Análisis Crítico:** El cuello de botella más visible es la frontera. La promesa de JIT se rompe en Laredo. Las "Fronteras Inteligentes" buscan unificar los estándares de datos de CBP y SAT para pre-autorizar la carga.</p>
+                                    <p class="mb-2">**Debate:** ¿El futuro de la eficiencia está en construir más puentes físicos o en implementar *autopistas de datos* que garanticen el flujo constante y predecible de la mercancía T-MEC?</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Panel 2 - Logística -->
+                        <div class="bg-gray-700 p-0 rounded overflow-hidden shadow-md">
+                            <div class="accordion-header flex justify-between items-center p-3 hover:bg-gray-600" onclick="toggleDetails('panel-2-logistica')">
+                                <p class="font-bold text-sm leading-snug">Tren contra Canal: CIIT vs. Panamá</p>
+                                <span class="text-lg ml-2 transform rotate-0 transition-transform duration-300" id="icon-panel-2-logistica">▼</span>
+                            </div>
+                            <div class="accordion-content" id="panel-2-logistica">
+                                <div class="p-3 bg-gray-600 text-gray-200 text-xs">
+                                    <p class="font-bold mb-2 text-[#90e0ef]">Panamá se seca. ¿El Istmo de Tehuantepec está listo para ser el salvavidas logístico del T-MEC?</p>
+                                    <p class="mb-2">**Análisis Crítico:** El CIIT (ferrocarril interoceánico) es una mitigación al riesgo climático y político del Canal de Panamá. Su velocidad es atractiva para mercancías de alto valor.</p>
+                                    <p class="mb-2">**Debate:** ¿La velocidad del tren (Istmo) compensa la capacidad masiva del canal? ¿Los retos de seguridad y el triple transbordo en el CIIT lo hacen inviable para grandes volúmenes?</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-gray-700 p-3 rounded">
+                            <span class="text-xs text-gray-400 uppercase tracking-wide">Taller</span>
+                            <p class="font-semibold text-sm">"Navegando el Istmo: Manual operativo para rutas multimodales"</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-gray-800 rounded-lg p-5 border-t-4 border-[#90e0ef]">
+                    <h3 class="text-xl font-bold text-[#90e0ef] mb-4">⚖️ Fiscal y Regulatorio</h3>
+                    <div class="space-y-4">
+                        <div class="bg-gray-700 p-3 rounded">
+                            <span class="text-xs text-gray-400 uppercase tracking-wide">Conferencia</span>
+                            <p class="font-semibold text-sm">"Cumplimiento T-MEC 2.0: Reglas de Origen y Valor de Contenido Laboral"</p>
+                        </div>
+                        
+                         <!-- Panel 3 - Fiscal -->
+                        <div class="bg-gray-700 p-0 rounded overflow-hidden shadow-md">
+                            <div class="accordion-header flex justify-between items-center p-3 hover:bg-gray-600" onclick="toggleDetails('panel-3-fiscal')">
+                                <p class="font-bold text-sm leading-snug">Incentivos Fiscales Comparados: Texas vs. Nuevo León vs. Bajío</p>
+                                <span class="text-lg ml-2 transform rotate-0 transition-transform duration-300" id="icon-panel-3-fiscal">▼</span>
+                            </div>
+                            <div class="accordion-content" id="panel-3-fiscal">
+                                <div class="p-3 bg-gray-600 text-gray-200 text-xs">
+                                    <p class="font-bold mb-2 text-[#00b4d8]">El Nearshoring es un juego de incentivos: ¿quién ofrece el mejor paquete para su próxima Gigafábrica?</p>
+                                    <p class="mb-2">**Análisis Crítico:** Los estados y provincias están en una "carrera a la baja" por la inversión. La decisión de *site selection* se basa en el costo total, la velocidad de permisos y las exenciones fiscales.</p>
+                                    <p class="mb-2">**Debate:** ¿Es más valioso el entorno de baja regulación de Texas o la proximidad y los programas de crédito fiscal de México? ¿Cómo impactan las regulaciones laborales y ambientales comparadas?</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Panel 4 - Fiscal -->
+                        <div class="bg-gray-700 p-0 rounded overflow-hidden shadow-md">
+                            <div class="accordion-header flex justify-between items-center p-3 hover:bg-gray-600" onclick="toggleDetails('panel-4-fiscal')">
+                                <p class="font-bold text-sm leading-snug">Auditorías de Comercio Exterior: Preparación ante el SAT y CBP</p>
+                                <span class="text-lg ml-2 transform rotate-0 transition-transform duration-300" id="icon-panel-4-fiscal">▼</span>
+                            </div>
+                            <div class="accordion-content" id="panel-4-fiscal">
+                                <div class="p-3 bg-gray-600 text-gray-200 text-xs">
+                                    <p class="font-bold mb-2 text-[#00b4d8]">Fiscalización Transfronteriza: Auditorías simultáneas (SAT y CBP) y Mejores Prácticas</p>
+                                    <p class="mb-2">**Análisis Crítico:** La colaboración aduanera binacional es cada vez más estricta. Las empresas deben prepararse para auditorías integradas, especialmente en el manejo de inventarios (IMMEX) y el cumplimiento de Reglas de Origen.</p>
+                                    <p class="mb-2">**Debate:** ¿Cómo las empresas garantizan la transparencia total de su cadena para evitar multas millonarias y detenciones de mercancía en ambos lados de la frontera?</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-gray-700 p-3 rounded">
+                            <span class="text-xs text-gray-400 uppercase tracking-wide">Taller</span>
+                            <p class="font-semibold text-sm">"Dominando IMMEX/Maquiladoras: Control de Inventario y Anexo 24/31 para evitar multas"</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-gray-800 rounded-lg p-5 border-t-4 border-[#0077b6]">
+                    <h3 class="text-xl font-bold text-[#0077b6] mb-4">⚡ Energía e Innovación</h3>
+                    <div class="space-y-4">
+                        <div class="bg-gray-700 p-3 rounded">
+                            <span class="text-xs text-gray-400 uppercase tracking-wide">Conferencia</span>
+                            <p class="font-semibold text-sm">"El Gigavatio Perdido: Asegurando energía para la expansión industrial"</p>
+                        </div>
+                        
+                        <!-- Panel 5 - Energía/Innovación -->
+                        <div class="bg-gray-700 p-0 rounded overflow-hidden shadow-md">
+                            <div class="accordion-header flex justify-between items-center p-3 hover:bg-gray-600" onclick="toggleDetails('panel-5-energia')">
+                                <p class="font-bold text-sm leading-snug">Electromovilidad: La carrera por los semiconductores en Norteamérica</p>
+                                <span class="text-lg ml-2 transform rotate-0 transition-transform duration-300" id="icon-panel-5-energia">▼</span>
+                            </div>
+                            <div class="accordion-content" id="panel-5-energia">
+                                <div class="p-3 bg-gray-600 text-gray-200 text-xs">
+                                    <p class="font-bold mb-2 text-[#00b4d8]">El carro eléctrico no es un coche, es una computadora sobre ruedas.</p>
+                                    <p class="mb-2">**Análisis Crítico:** El valor de un EV depende del software y los semiconductores. La Ley CHIPS en EE. UU. busca crear una cadena regional desde cero.</p>
+                                    <p class="mb-2">**Debate:** ¿La dependencia de Asia en los microprocesadores seguirá dictando la velocidad de producción de EV en Norteamérica? ¿La cooperación México-EE. UU.-Canadá puede cerrar la brecha tecnológica a tiempo?</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Panel 6 - Energía/Innovación -->
+                        <div class="bg-gray-700 p-0 rounded overflow-hidden shadow-md">
+                            <div class="accordion-header flex justify-between items-center p-3 hover:bg-gray-600" onclick="toggleDetails('panel-6-energia')">
+                                <p class="font-bold text-sm leading-snug">Reciclaje Circular y el Litio Americano</p>
+                                <span class="text-lg ml-2 transform rotate-0 transition-transform duration-300" id="icon-panel-6-energia">▼</span>
+                            </div>
+                            <div class="accordion-content" id="panel-6-energia">
+                                <div class="p-3 bg-gray-600 text-gray-200 text-xs">
+                                    <p class="font-bold mb-2 text-[#00b4d8]">Minería Urbana: El camino para cumplir la regla de origen sin China.</p>
+                                    <p class="mb-2">**Análisis Crítico:** La minería de litio es lenta. El camino más rápido para obtener litio que cumpla las reglas IRA/FEOC es el reciclaje de baterías (Minería Urbana) dentro de la región T-MEC.</p>
+                                    <p class="mb-2">**Debate:** ¿Qué inversión se necesita para escalar el procesamiento de "masa negra" de baterías en Norteamérica y romper la dependencia de las refinerías asiáticas?</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-gray-700 p-3 rounded">
+                            <span class="text-xs text-gray-400 uppercase tracking-wide">Taller</span>
+                            <p class="font-semibold text-sm">"Automatización Low-Cost: Innovación práctica para PYMES"</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-gray-800 rounded-lg p-5 border-t-4 border-[#ffb703]">
+                    <h3 class="text-xl font-bold text-[#ffb703] mb-4">🌎 Geopolítica y Talento</h3>
+                    <div class="space-y-4">
+                        <div class="bg-gray-700 p-3 rounded">
+                            <span class="text-xs text-gray-400 uppercase tracking-wide">Conferencia</span>
+                            <p class="font-semibold text-sm">"Más allá de las elecciones: El futuro de la relación bilateral"</p>
+                        </div>
+                        
+                        <!-- Panel 7 - Geopolítica/Talento -->
+                        <div class="bg-gray-700 p-0 rounded overflow-hidden shadow-md">
+                            <div class="accordion-header flex justify-between items-center p-3 hover:bg-gray-600" onclick="toggleDetails('panel-7-geo')">
+                                <p class="font-bold text-sm leading-snug">La Crisis de Talento Técnico: Soluciones Binacionales</p>
+                                <span class="text-lg ml-2 transform rotate-0 transition-transform duration-300" id="icon-panel-7-geo">▼</span>
+                            </div>
+                            <div class="accordion-content" id="panel-7-geo">
+                                <div class="p-3 bg-gray-600 text-gray-200 text-xs">
+                                    <p class="font-bold mb-2 text-[#00b4d8]">Los empleos del Nearshoring están aquí, pero ¿dónde está la gente que puede tomarlos?</p>
+                                    <p class="mb-2">**Análisis Crítico:** El déficit de ingenieros y técnicos es el freno real a la expansión. Se requieren modelos educativos y de certificación dual (MTY-San Antonio) para cerrar la brecha.</p>
+                                    <p class="mb-2">**Debate:** ¿Cómo usar las visas T-MEC y los programas de aprendizaje para acelerar la formación de la fuerza laboral a la velocidad que exige la inversión?</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Panel 8 - Geopolítica/Talento -->
+                        <div class="bg-gray-700 p-0 rounded overflow-hidden shadow-md">
+                            <div class="accordion-header flex justify-between items-center p-3 hover:bg-gray-600" onclick="toggleDetails('panel-8-geo')">
+                                <p class="font-bold text-sm leading-snug">El Futuro de la Relación Bilateral: Escenarios Post-Electorales</p>
+                                <span class="text-lg ml-2 transform rotate-0 transition-transform duration-300" id="icon-panel-8-geo">▼</span>
+                            </div>
+                            <div class="accordion-content" id="panel-8-geo">
+                                <div class="p-3 bg-gray-600 text-gray-200 text-xs">
+                                    <p class="font-bold mb-2 text-[#00b4d8]">Máxima Incertidumbre: ¿Puede el T-MEC sobrevivir a la polarización política y a las promesas proteccionistas?</p>
+                                    <p class="mb-2">**Análisis Crítico:** Las elecciones en ambos países inyectan volatilidad. La industria requiere estabilidad a 20 años, pero la política opera en ciclos cortos.</p>
+                                    <p class="mb-2">**Debate:** ¿La inercia económica y la interdependencia de la cadena automotriz son suficientes para contener a un gobierno proteccionista? ¿Cuál es el riesgo real de reversión de políticas?</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-gray-700 p-3 rounded">
+                            <span class="text-xs text-gray-400 uppercase tracking-wide">Taller</span>
+                            <p class="font-semibold text-sm">"Negociación Intercultural: Claves para compras en Norteamérica"</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        
+        function splitLabel(label) {
+            if (typeof label !== 'string' || label.length <= 16) {
+                return label;
+            }
+            const words = label.split(' ');
+            const lines = [];
+            let currentLine = words[0];
+
+            for (let i = 1; i < words.length; i++) {
+                if (currentLine.length + 1 + words[i].length <= 16) {
+                    currentLine += ' ' + words[i];
+                } else {
+                    lines.push(currentLine);
+                    currentLine = words[i];
+                }
+            }
+            lines.push(currentLine);
+            return lines;
+        }
+
+        const commonTooltipOptions = {
+            callbacks: {
+                title: function(tooltipItems) {
+                    const item = tooltipItems[0];
+                    let label = item.chart.data.labels[item.dataIndex];
+                    if (Array.isArray(label)) {
+                        return label.join(' ');
+                    } else {
+                        return label;
+                    }
+                }
+            }
+        };
+
+        const vibrantPalette = {
+            primary: '#0077B6',   
+            secondary: '#00B4D8', 
+            light: '#90E0EF',     
+            accent: '#FFB703',    
+            dark: '#023E8A'       
+        };
+
+        function toggleDetails(id) {
+            const content = document.getElementById(id);
+            const icon = document.getElementById('icon-' + id);
+            
+            if (content.classList.contains('active')) {
+                content.classList.remove('active');
+                icon.classList.remove('rotate-180');
+            } else {
+                
+                document.querySelectorAll('.accordion-content.active').forEach(c => {
+                    if (c.id !== id) {
+                        c.classList.remove('active');
+                        document.getElementById('icon-' + c.id).classList.remove('rotate-180');
+                    }
+                });
+                
+                content.classList.add('active');
+                icon.classList.add('rotate-180');
+            }
+        }
+        
+        const ctxShipping = document.getElementById('shippingComparisonChart').getContext('2d');
+        const rawShippingLabels = ['Shanghai a Los Angeles', 'Shanghai a Nueva York', 'Monterrey a San Antonio', 'Bajío a Laredo'];
+        const processedShippingLabels = rawShippingLabels.map(splitLabel);
+
+        new Chart(ctxShipping, {
+            type: 'bar',
+            data: {
+                labels: processedShippingLabels,
+                datasets: [{
+                    label: 'Días de Tránsito Promedio',
+                    data: [20, 32, 1, 2], 
+                    backgroundColor: [
+                        vibrantPalette.light,
+                        vibrantPalette.light,
+                        vibrantPalette.accent,
+                        vibrantPalette.primary
+                    ],
+                    borderColor: vibrantPalette.dark,
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                maintainAspectRatio: false,
+                responsive: true,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: { ...commonTooltipOptions }
+                },
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        title: { display: true, text: 'Días' }
+                    }
+                }
+            }
+        });
+
+        
+        const ctxEnergy = document.getElementById('energyConsumptionChart').getContext('2d');
+        const rawEnergyLabels = ['Consumo Pico Manhattan', 'Mega Data Center (Proyectado)', 'Consumo Pico San Francisco', 'Planta Automotriz Típica'];
+        const processedEnergyLabels = rawEnergyLabels.map(splitLabel);
+
+        new Chart(ctxEnergy, {
+            type: 'bar',
+            data: {
+                labels: processedEnergyLabels,
+                datasets: [{
+                    label: 'Gigavatios (GW)',
+                    data: [1.6, 1.4, 0.9, 0.05],
+                    backgroundColor: [
+                        '#e0e0e0', 
+                        vibrantPalette.accent, 
+                        '#e0e0e0',
+                        '#e0e0e0'
+                    ],
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                maintainAspectRatio: false,
+                responsive: true,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: { ...commonTooltipOptions }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: { display: true, text: 'Gigavatios (GW)' }
+                    }
+                }
+            }
+        });
+
+        
+        const ctxEV = document.getElementById('evMarketShareChart').getContext('2d');
+        const rawEVLabels = ['Ventas Vehículo Tradicional (ICE)', 'Ventas Nuevas Energías (EV/Híbridos)'];
+        
+        new Chart(ctxEV, {
+            type: 'doughnut',
+            data: {
+                labels: rawEVLabels.map(splitLabel),
+                datasets: [{
+                    data: [82, 18], 
+                    backgroundColor: [
+                        '#e0e0e0',
+                        vibrantPalette.secondary
+                    ],
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                maintainAspectRatio: false,
+                responsive: true,
+                plugins: {
+                    tooltip: { ...commonTooltipOptions },
+                    legend: { position: 'bottom' }
+                }
+            }
+        });
+
+        
+        const tracePanama = {
+            x: ['2023', '2024', '2025', '2026'],
+            y: [100, 85, 88, 90], 
+            mode: 'lines+markers',
+            name: 'Capacidad Canal Panamá',
+            line: {color: vibrantPalette.primary, width: 3},
+            type: 'scatter'
+        };
+
+        const traceIsthmus = {
+            x: ['2023', '2024', '2025', '2026'],
+            y: [5, 15, 30, 45], 
+            mode: 'lines+markers',
+            name: 'Capacidad Istmo',
+            line: {color: vibrantPalette.accent, width: 3, dash: 'dot'},
+            type: 'scatter'
+        };
+
+        const layoutIsthmus = {
+            title: { text: 'Tendencia de Capacidad Logística', font: { size: 14 } },
+            showlegend: true,
+            legend: { orientation: 'h', y: -0.2 },
+            margin: { t: 40, r: 20, l: 40, b: 40 },
+            xaxis: { title: 'Año' },
+            yaxis: { title: 'Índice de Capacidad' },
+            font: { family: 'Roboto, sans-serif' },
+            paper_bgcolor: 'rgba(0,0,0,0)',
+            plot_bgcolor: 'rgba(0,0,0,0)'
+        };
+
+        const configIsthmus = {
+            responsive: true,
+            displayModeBar: false,
+            renderer: 'canvas' 
+        };
+
+        Plotly.newPlot('isthmusPlot', [tracePanama, traceIsthmus], layoutIsthmus, configIsthmus);
+
+        
+        const ctxCyber = document.getElementById('cyberRiskChart').getContext('2d');
+        const rawCyberLabels = ['2023 (Base)', '2024', '2025 (Proy.)', '2026 (Proy.)'];
+        
+        new Chart(ctxCyber, {
+            type: 'line',
+            data: {
+                labels: rawCyberLabels,
+                datasets: [{
+                    label: 'Índice de Ataques a Supply Chain',
+                    data: [100, 135, 180, 240], 
+                    borderColor: vibrantPalette.dark,
+                    backgroundColor: 'rgba(2, 62, 138, 0.1)',
+                    tension: 0.4,
+                    fill: true,
+                    pointBackgroundColor: vibrantPalette.accent
+                }]
+            },
+            options: {
+                maintainAspectRatio: false,
+                responsive: true,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: { ...commonTooltipOptions }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: { display: true, text: 'Índice (Base 100)' }
+                    }
+                }
+            }
+        });
+
+        
+        const ctxInnovationRadar = document.getElementById('innovationRadarChart').getContext('2d');
+        const rawInnovationLabels = ['Calidad (Zero-Defectos)', 'Adaptación del Operador', 'Velocidad de Decisión (ms)', 'Análisis Predictivo', 'Optimización de Inventario'];
+        const processedInnovationLabels = rawInnovationLabels.map(splitLabel);
+
+        new Chart(ctxInnovationRadar, {
+            type: 'radar',
+            data: {
+                labels: processedInnovationLabels,
+                datasets: [
+                    {
+                        label: 'Toyota Way (Humano/Proceso)',
+                        data: [10, 9, 3, 5, 8], 
+                        backgroundColor: 'rgba(0, 119, 182, 0.4)', 
+                        borderColor: vibrantPalette.primary,
+                        pointBackgroundColor: vibrantPalette.primary,
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: vibrantPalette.primary
+                    },
+                    {
+                        label: 'ChatGPT Way (Algoritmo/Datos)',
+                        data: [7, 4, 10, 10, 9], 
+                        backgroundColor: 'rgba(0, 180, 216, 0.4)', 
+                        borderColor: vibrantPalette.secondary,
+                        pointBackgroundColor: vibrantPalette.secondary,
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: vibrantPalette.secondary
+                    }
+                ]
+            },
+            options: {
+                maintainAspectRatio: false,
+                responsive: true,
+                plugins: {
+                    tooltip: { ...commonTooltipOptions },
+                    legend: { position: 'bottom' }
+                },
+                scales: {
+                    r: {
+                        angleLines: { color: '#e0e0e0' },
+                        grid: { color: '#e0e0e0' },
+                        pointLabels: { color: '#333' },
+                        suggestedMin: 0,
+                        suggestedMax: 10
+                    }
+                }
+            }
+        });
+
+    </script>
+</body>
+</html>
