@@ -54,7 +54,38 @@ function loadFromLocalStorage() {
     const stored = localStorage.getItem('nearshorethemes');
     if (stored) {
         themes = JSON.parse(stored);
+    } else {
+        // Create initial seed data when localStorage is empty
+        createInitialSeedData();
     }
+}
+
+function createInitialSeedData() {
+    const baseId = Date.now();
+    const initialTheme = {
+        id: baseId.toString(),
+        name: 'Información Subida',
+        description: 'Documentos y reportes iniciales',
+        subtopics: [
+            {
+                id: (baseId + 1).toString(),
+                name: 'Summit / Reportes',
+                resources: [
+                    {
+                        id: (baseId + 2).toString(),
+                        type: 'link',
+                        url: 'https://juanvazquezd.github.io/NearshoreConnection/Info1.html',
+                        title: 'Info1 - Estrategia Manufacturera Norteamérica 2025'
+                    }
+                ],
+                attachments: []
+            }
+        ],
+        attachments: []
+    };
+    
+    themes = [initialTheme];
+    saveToLocalStorage();
 }
 
 // Theme functions
