@@ -61,17 +61,18 @@ function loadFromLocalStorage() {
 }
 
 function createInitialSeedData() {
+    const baseId = Date.now();
     const initialTheme = {
-        id: Date.now().toString(),
+        id: baseId.toString(),
         name: 'Información Subida',
         description: 'Documentos y reportes iniciales',
         subtopics: [
             {
-                id: (Date.now() + 1).toString(),
+                id: (baseId + 1).toString(),
                 name: 'Summit / Reportes',
                 resources: [
                     {
-                        id: (Date.now() + 2).toString(),
+                        id: (baseId + 2).toString(),
                         type: 'link',
                         url: 'https://juanvazquezd.github.io/NearshoreConnection/Info1.html',
                         title: 'Info1 - Estrategia Manufacturera Norteamérica 2025'
