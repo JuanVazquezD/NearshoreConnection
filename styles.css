@@ -266,6 +266,14 @@ main {
     min-height: 300px;
 }
 
+.html-resource-iframe {
+    width: 100%;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    min-height: 400px;
+    display: block;
+}
+
 .resource-display iframe {
     width: 100%;
     border: none;
