@@ -266,11 +266,24 @@ main {
     min-height: 300px;
 }
 
-.resource-display iframe {
+.resource-display iframe,
+.isolated-html-iframe {
     width: 100%;
     border: none;
     border-radius: 4px;
     min-height: 300px;
+    height: 400px; /* Default height for sandboxed iframes */
+    overflow: auto; /* Allow scrolling if content exceeds height */
+}
+
+.preview-frame iframe,
+.preview-frame .isolated-html-iframe {
+    width: 100%;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    min-height: 400px;
+    height: 500px; /* Larger default for preview */
+    overflow: auto;
 }
 
 .resource-display a {

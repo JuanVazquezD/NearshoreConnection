@@ -460,256 +460,172 @@ function renderHTMLResource(containerId, resource) {
         renderFullHTML(container, resource.fullHtml);
     } else {
         // Old format: separate fields (for backward compatibility)
-        const wrapper = document.createElement('div');
-        wrapper.className = 'html-resource-wrapper';
+        // Combine html, css, and js into a complete HTML document
+        let completeHtml = '<!DOCTYPE html>\n<html>\n<head>\n<meta charset="UTF-8">\n<meta name="viewport" content="width=device-width, initial-scale=1.0">\n';
         
-        // Add CSS
+        // Add CSS if present
         if (resource.css) {
-            const style = document.createElement('style');
-            style.textContent = resource.css;
-            wrapper.appendChild(style);
+            completeHtml += '<style>\n' + resource.css + '\n</style>\n';
         }
         
-        // Add HTML
+        completeHtml += '</head>\n<body>\n';
+        
+        // Add HTML if present
         if (resource.html) {
-            const htmlContainer = document.createElement('div');
-            htmlContainer.innerHTML = resource.html;
-            wrapper.appendChild(htmlContainer);
+            completeHtml += resource.html + '\n';
         }
         
-        container.appendChild(wrapper);
-        
-        // Execute JavaScript
+        // Add JavaScript if present
         if (resource.js) {
-            try {
-                const scriptFunc = new Function('container', resource.js);
-                scriptFunc.call(wrapper, wrapper);
-            } catch (error) {
-                console.error('Error ejecutando JavaScript del recurso:', error);
-                const errorDiv = document.createElement('div');
-                errorDiv.style.color = '#dc3545';
-                errorDiv.style.padding = '10px';
-                errorDiv.style.background = '#f8d7da';
-                errorDiv.style.borderRadius = '4px';
-                errorDiv.textContent = 'Error en JavaScript: ' + error.message;
-                container.appendChild(errorDiv);
-            }
+            completeHtml += '<script>\n' + resource.js + '\n</script>\n';
         }
+        
+        completeHtml += '</body>\n</html>';
+        
+        // Create isolated iframe with the combined content
+        const iframe = createIsolatedIframe(completeHtml);
+        container.appendChild(iframe);
     }
 }
 
 function renderFullHTML(container, fullHtmlCode) {
-    // Create a wrapper
-    const wrapper = document.createElement('div');
-    wrapper.className = 'html-resource-wrapper';
+    // Clear container
+    container.innerHTML = '';
     
-    // Extract and handle CSS from <style> tags
-    const styleRegex = /<style[^>]*>([\s\S]*?)<\/style>/gi;
-    let styleMatch;
-    while ((styleMatch = styleRegex.exec(fullHtmlCode)) !== null) {
-        const style = document.createElement('style');
-        style.textContent = styleMatch[1];
-        wrapper.appendChild(style);
-    }
+    // Ensure the HTML has proper document structure
+    // Note: This restructuring is for proper HTML formatting, NOT for security.
+    // Security is provided by the sandboxed iframe created at the end of this function.
+    let completeHtml = fullHtmlCode.trim();
     
-    // Extract external scripts and inline scripts separately
-    const scriptSrcRegex = /<script[^>]+src=["']([^"']+)["'][^>]*>[\s\S]*?<\/script>/gi;
-    const scriptInlineRegex = /<script(?![^>]*src=)([^>]*)>([\s\S]*?)<\/script>/gi;
-    
-    const externalScripts = [];
-    const inlineScripts = [];
-    
-    let scriptMatch;
-    
-    // Extract external scripts
-    while ((scriptMatch = scriptSrcRegex.exec(fullHtmlCode)) !== null) {
-        externalScripts.push(scriptMatch[1]);
-    }
-    
-    // Extract inline scripts
-    while ((scriptMatch = scriptInlineRegex.exec(fullHtmlCode)) !== null) {
-        inlineScripts.push(scriptMatch[2]);
-    }
-    
-    // Remove style and script tags from HTML
-    let cleanHtml = fullHtmlCode;
-    cleanHtml = cleanHtml.replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '');
-    cleanHtml = cleanHtml.replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '');
-    
-    // Remove DOCTYPE, html, head, body tags if present to get just the content
-    cleanHtml = cleanHtml.replace(/<!DOCTYPE[^>]*>/gi, '');
-    cleanHtml = cleanHtml.replace(/<\/?html[^>]*>/gi, '');
-    cleanHtml = cleanHtml.replace(/<\/?head[^>]*>/gi, '');
-    cleanHtml = cleanHtml.replace(/<\/?body[^>]*>/gi, '');
-    
-    // Extract link tags (fonts, stylesheets)
-    const linkRegex = /<link[^>]+>/gi;
-    let linkMatch;
-    while ((linkMatch = linkRegex.exec(fullHtmlCode)) !== null) {
-        const linkElement = document.createElement('div');
-        linkElement.innerHTML = linkMatch[0];
-        const actualLink = linkElement.firstChild;
-        if (actualLink) {
-            wrapper.appendChild(actualLink.cloneNode(true));
+    // If the HTML doesn't have DOCTYPE, html, head, or body tags, wrap it
+    if (!completeHtml.match(/<!DOCTYPE/i)) {
+        const hasHtmlTag = completeHtml.match(/<html/i);
+        const hasHeadTag = completeHtml.match(/<head/i);
+        const hasBodyTag = completeHtml.match(/<body/i);
+        
+        if (!hasHtmlTag || !hasHeadTag || !hasBodyTag) {
+            // Extract style and script tags to put in proper locations
+            // These regex patterns are for restructuring only, not security filtering
+            const styles = [];
+            const headScripts = [];
+            
+            const styleRegex = /<style[^>]*>([\s\S]*?)<\/style>/gi;
+            let match;
+            while ((match = styleRegex.exec(completeHtml)) !== null) {
+                styles.push(match[0]);
+            }
+            
+            const scriptRegex = /<script[^>]*>[\s\S]*?<\/script>/gi;
+            while ((match = scriptRegex.exec(completeHtml)) !== null) {
+                headScripts.push(match[0]);
+            }
+            
+            // Remove style and script tags from original HTML to reorganize them
+            let bodyHtml = completeHtml;
+            bodyHtml = bodyHtml.replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '');
+            bodyHtml = bodyHtml.replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '');
+            
+            // Extract link tags for head
+            const links = [];
+            const linkRegex = /<link[^>]+>/gi;
+            while ((match = linkRegex.exec(bodyHtml)) !== null) {
+                links.push(match[0]);
+            }
+            bodyHtml = bodyHtml.replace(/<link[^>]+>/gi, '');
+            
+            completeHtml = `<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    ${links.join('\n    ')}
+    ${styles.join('\n    ')}
+</head>
+<body>
+    ${bodyHtml}
+    ${headScripts.join('\n    ')}
+</body>
+</html>`;
         }
     }
-    cleanHtml = cleanHtml.replace(/<link[^>]+>/gi, '');
     
-    // Set the cleaned HTML
-    const htmlContainer = document.createElement('div');
-    htmlContainer.innerHTML = cleanHtml.trim();
-    wrapper.appendChild(htmlContainer);
+    // Create isolated iframe with the HTML content
+    const iframe = createIsolatedIframe(completeHtml);
+    container.appendChild(iframe);
+}
+
+// Utility function to create isolated iframes for HTML content
+function createIsolatedIframe(htmlContent) {
+    const iframe = document.createElement('iframe');
+    iframe.className = 'isolated-html-iframe';
+    iframe.style.width = '100%';
+    iframe.style.border = 'none';
+    iframe.style.minHeight = '300px';
     
-    container.appendChild(wrapper);
+    // Set sandbox attribute to isolate the content
+    // allow-scripts: permits scripts to run within the iframe
+    // Note: We intentionally do NOT use 'allow-same-origin' to maintain strong isolation
+    // and prevent iframe content from accessing the parent document
+    iframe.setAttribute('sandbox', 'allow-scripts');
     
-    // Load external scripts first, then execute inline scripts
-    loadScriptsSequentially(externalScripts, wrapper)
-        .then(() => {
-            // Wait for Chart.js and Plotly to be available
-            const libraryChecks = [];
-            
-            // Check if Chart.js is needed
-            if (externalScripts.some(url => url.includes('chart') || url.includes('Chart'))) {
-                libraryChecks.push(waitForLibrary('Chart'));
-            }
-            
-            // Check if Plotly is needed
-            if (externalScripts.some(url => url.includes('plotly') || url.includes('Plotly'))) {
-                libraryChecks.push(waitForLibrary('Plotly'));
-            }
-            
-            return Promise.all(libraryChecks);
-        })
-        .then(() => {
-            console.log('Todas las librerías están listas. Esperando a que el DOM esté listo...');
-            
-            // Wait for DOM to be fully rendered before executing scripts
-            return new Promise(resolve => setTimeout(resolve, 500));
-        })
-        .then(() => {
-            console.log('DOM listo. Ejecutando scripts...');
-            
-            // Execute inline scripts after external scripts are loaded and DOM is ready
-            inlineScripts.forEach((scriptContent, index) => {
-                if (scriptContent.trim()) {
-                    try {
-                        console.log(`Ejecutando script inline ${index + 1}...`);
-                        
-                        // Replace DOMContentLoaded with immediate execution since DOM is already loaded
-                        let modifiedScript = scriptContent;
-                        
-                        // Replace all variations of DOMContentLoaded listeners
-                        modifiedScript = modifiedScript.replace(
-                            /document\.addEventListener\s*\(\s*['"]DOMContentLoaded['"]\s*,\s*function\s*\(\)\s*{/g,
-                            '(function() {'
-                        );
-                        
-                        modifiedScript = modifiedScript.replace(
-                            /document\.addEventListener\s*\(\s*['"]DOMContentLoaded['"]\s*,\s*\(\)\s*=>\s*{/g,
-                            '(function() {'
-                        );
-                        
-                        // Close the IIFE at the end if we made replacements
-                        if (modifiedScript !== scriptContent) {
-                            // Find the last }); and replace with })();
-                            const lastIndex = modifiedScript.lastIndexOf('});');
-                            if (lastIndex !== -1) {
-                                modifiedScript = modifiedScript.substring(0, lastIndex) + '})();' + modifiedScript.substring(lastIndex + 3);
-                            }
-                        }
-                        
-                        // Also handle if (document.readyState === 'loading')
-                        modifiedScript = modifiedScript.replace(
-                            /if\s*\(\s*document\.readyState\s*===\s*['"]loading['"]\s*\)\s*{/g,
-                            'if (false) {'
-                        );
-                        
-                        // Execute in global context so libraries are accessible
-                        const scriptFunc = new Function(modifiedScript);
-                        scriptFunc.call(window);
-                        console.log(`Script ${index + 1} ejecutado exitosamente`);
-                    } catch (error) {
-                        console.error('Error ejecutando JavaScript:', error);
-                        const errorDiv = document.createElement('div');
-                        errorDiv.style.color = '#dc3545';
-                        errorDiv.style.padding = '10px';
-                        errorDiv.style.background = '#f8d7da';
-                        errorDiv.style.borderRadius = '4px';
-                        errorDiv.style.marginTop = '10px';
-                        errorDiv.innerHTML = `<strong>Error en JavaScript:</strong><br>${error.message}<br><small>${error.stack}</small>`;
-                        container.appendChild(errorDiv);
+    // Use srcdoc if available (modern browsers)
+    if ('srcdoc' in iframe) {
+        iframe.srcdoc = htmlContent;
+    } else {
+        // Fallback for older browsers
+        iframe.src = 'data:text/html;charset=utf-8,' + encodeURIComponent(htmlContent);
+    }
+    
+    // Auto-resize iframe based on content
+    // Note: Due to sandbox restrictions (no allow-same-origin), accessing contentDocument
+    // will fail with a security exception, which is the intended security behavior.
+    // The iframe will use the default/minimum height specified in CSS.
+    iframe.onload = function() {
+        try {
+            const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+            if (iframeDoc && iframeDoc.body) {
+                const resizeIframe = () => {
+                    const height = iframeDoc.documentElement.scrollHeight || iframeDoc.body.scrollHeight;
+                    if (height > 0) {
+                        iframe.style.height = height + 'px';
                     }
+                };
+                
+                // Initial resize
+                resizeIframe();
+                
+                // Use ResizeObserver if available for better performance
+                if (window.ResizeObserver) {
+                    const resizeObserver = new ResizeObserver(resizeIframe);
+                    resizeObserver.observe(iframeDoc.body);
+                    
+                    // Store observer for cleanup when iframe is removed
+                    iframe._resizeObserver = resizeObserver;
+                } else {
+                    // Fallback: Use MutationObserver for older browsers
+                    const mutationObserver = new MutationObserver(resizeIframe);
+                    mutationObserver.observe(iframeDoc.body, {
+                        attributes: true,
+                        childList: true,
+                        subtree: true
+                    });
+                    
+                    // Store observer for cleanup
+                    iframe._mutationObserver = mutationObserver;
+                    
+                    // Also do periodic checks for dynamic content
+                    setTimeout(resizeIframe, 500);
+                    setTimeout(resizeIframe, 1500);
                 }
-            });
-        })
-        .catch(error => {
-            console.error('Error cargando scripts externos:', error);
-            const errorDiv = document.createElement('div');
-            errorDiv.style.color = '#dc3545';
-            errorDiv.style.padding = '10px';
-            errorDiv.style.background = '#f8d7da';
-            errorDiv.style.borderRadius = '4px';
-            errorDiv.style.marginTop = '10px';
-            errorDiv.innerHTML = `<strong>Error cargando librerías:</strong><br>${error.message}<br><small>Verifica tu conexión a internet</small>`;
-            container.appendChild(errorDiv);
-        });
-}
-
-function loadScriptsSequentially(scriptUrls, container) {
-    return scriptUrls.reduce((promise, url) => {
-        return promise.then(() => loadScript(url, container));
-    }, Promise.resolve());
-}
-
-function loadScript(url, container) {
-    return new Promise((resolve, reject) => {
-        // Check if script is already loaded globally
-        const existingScript = document.querySelector(`script[src="${url}"]`);
-        if (existingScript) {
-            // Script already loaded, wait a bit to ensure it's ready
-            setTimeout(() => {
-                console.log(`Script ya existente: ${url}`);
-                resolve();
-            }, 100);
-            return;
-        }
-        
-        const script = document.createElement('script');
-        script.src = url;
-        script.async = false; // Load in order
-        
-        script.onload = () => {
-            console.log(`Script cargado exitosamente: ${url}`);
-            // Wait a bit to ensure the library is fully initialized
-            setTimeout(() => resolve(), 200);
-        };
-        
-        script.onerror = () => {
-            console.error(`Error cargando script: ${url}`);
-            reject(new Error(`No se pudo cargar: ${url}`));
-        };
-        
-        // Append to document head for global availability
-        document.head.appendChild(script);
-    });
-}
-
-// Helper function to wait for libraries to be available
-function waitForLibrary(libraryName, maxAttempts = 50) {
-    return new Promise((resolve, reject) => {
-        let attempts = 0;
-        const checkInterval = setInterval(() => {
-            attempts++;
-            if (window[libraryName]) {
-                clearInterval(checkInterval);
-                console.log(`Librería ${libraryName} disponible`);
-                resolve();
-            } else if (attempts >= maxAttempts) {
-                clearInterval(checkInterval);
-                reject(new Error(`Timeout esperando ${libraryName}`));
             }
-        }, 100);
-    });
+        } catch (e) {
+            // Expected: Sandboxed iframes without 'allow-same-origin' cannot be accessed
+            // This is the correct security behavior - iframe uses default height from CSS
+            // Users can scroll within the iframe if content exceeds the default height
+        }
+    };
+    
+    return iframe;
 }
 
 // Utility functions
